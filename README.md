@@ -9,6 +9,8 @@ Graphics
 - Favicon: [Customer journey icons](https://www.flaticon.com/free-icon/destination_8221211?term=itinerary&related_id=8221211) created by [Icon Hubs](https://www.flaticon.com/authors/icon-hubs) - Flaticon
 
 Code Citations
+- The code was entirely built using Artificial Intelligence (AI) tools as @ABagram currently has limited knowledge on JavaScript, which could impact the functionality and greatly reduce the quality of the user experience (UX). She thought that she could immediately make use of the website if it were developed to cater to her intended use.
+    - The starting code code was made using OpenAI's ChatGPT, while majority of the edits and features (e.g. JavaScript) were primarily madee using GitHub Copilot (GPT 4o). The prompts are completely directed by @ABagram.
 - https://github.com/freyhill/freyhill.github.io/tree/93ff85076768e97a60b21dd49bebd8a681a5a912/example/currying/index.html
 
 References
