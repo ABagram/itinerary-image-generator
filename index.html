@@ -292,11 +292,33 @@
       font-size: 18px;
       margin-left: 10px;
     }
+
+    .control-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .control-buttons button {
+      background-color: #0070F2;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
   </style>
 </head>
 <body>
   <div class="planner-container">
-    <h1>Travel Planner</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h1>Travel Planner</h1>
+      <div class="control-buttons">
+        <button onclick="document.getElementById('import-input').click()">Import</button>
+        <input type="file" id="import-input" style="display: none;" onchange="importData(event)">
+        <button onclick="exportData()">Export</button>
+        <button onclick="clearData()">Clear</button>
+      </div>
+    </div>
 
     <div id="days-container"></div>
 
@@ -717,6 +739,46 @@
 
         downloadButton.style.visibility = 'visible';
       });
+    }
+
+    function exportData() {
+      const data = localStorage.getItem(`daysData-${userId}`);
+      const blob = new Blob([data], { type: 'application/json' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'itinerary.json';
+      link.click();
+    }
+
+    function importData(event) {
+      const daysContainer = document.getElementById('days-container');
+      const hasInput = Array.from(daysContainer.querySelectorAll('.location-input, .destination-input, .meal-input, .restaurant-input, .transportation-input'))
+        .some(input => input.value.trim() !== '');
+
+      if (hasInput) {
+        const proceed = confirm("Importing without clearing will add to the current itinerary. Do you want to proceed?");
+        if (!proceed) {
+          event.target.value = ''; // Clear the file input
+          return;
+        }
+      }
+
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const data = e.target.result;
+          localStorage.setItem(`daysData-${userId}`, data);
+          loadData();
+        };
+        reader.readAsText(file);
+      }
+    }
+
+    function clearData() {
+      localStorage.removeItem(`daysData-${userId}`);
+      document.getElementById('days-container').innerHTML = '';
+      addDay();
     }
 
     // Load data on page load
