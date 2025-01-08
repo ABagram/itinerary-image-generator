@@ -314,6 +314,31 @@
     .day-header .move-day-button {
       margin-left: 0;
     }
+
+    .download-menu {
+      position: absolute;
+      right: 0;
+      top: 100%;
+      background: white;
+      border: 1px solid #f5f6f7;
+      border-radius: 5px;
+      display: none;
+      z-index: 1000;
+    }
+
+    .download-menu button {
+      display: block;
+      width: 100%;
+      padding: 5px 10px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .download-menu button:hover {
+      background: #f0f0f0;
+    }
   </style>
 </head>
 <body>
@@ -336,10 +361,16 @@
   <div class="canvas-container" id="canvas-container">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <h2>Itinerary</h2>
-      <button class="download-button" id="download-button" onclick="downloadTimeline()">
-        <i class="fa">&#xf019;</i>
-        Download
-      </button>
+      <div style="position: relative;">
+        <button class="download-button" id="download-button" onclick="showDownloadMenu()">
+          <i class="fa">&#xf019;</i>
+          Download
+        </button>
+        <div class="download-menu" id="download-menu">
+          <button onclick="downloadAsPNG()">Download as PNG</button>
+          <button onclick="downloadAsPDF()">Download as PDF</button>
+        </div>
+      </div>
     </div>
     <div id="itinerary-info" class="itinerary-info"></div>
     <div class="timeline">
@@ -748,7 +779,19 @@
       }
     }
 
-    function downloadTimeline() {
+    function showDownloadMenu() {
+      const downloadMenu = document.getElementById('download-menu');
+      downloadMenu.style.display = 'block';
+
+      document.addEventListener('click', function hideMenu(event) {
+        if (!downloadMenu.contains(event.target) && event.target !== document.getElementById('download-button')) {
+          downloadMenu.style.display = 'none';
+          document.removeEventListener('click', hideMenu);
+        }
+      });
+    }
+
+    function downloadAsPNG() {
       const downloadButton = document.getElementById('download-button');
       downloadButton.style.visibility = 'hidden';
 
@@ -766,6 +809,32 @@
         link.href = canvas.toDataURL('image/png');
         link.download = 'timeline.png';
         link.click();
+
+        downloadButton.style.visibility = 'visible';
+      });
+    }
+
+    function downloadAsPDF() {
+      const downloadButton = document.getElementById('download-button');
+      downloadButton.style.visibility = 'hidden';
+
+      const canvasContainer = document.getElementById('canvas-container');
+      const scale = 2; // Increase the scale for better quality
+
+      html2canvas(canvasContainer, {
+        scale: scale,
+        useCORS: true,
+        logging: true,
+        width: canvasContainer.scrollWidth,
+        height: canvasContainer.scrollHeight
+      }).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+        const imgProps = pdf.getImageProperties(imgData);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save('timeline.pdf');
 
         downloadButton.style.visibility = 'visible';
       });
@@ -818,5 +887,6 @@
     };
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 </body>
 </html>
