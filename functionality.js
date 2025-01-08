@@ -76,7 +76,7 @@ function addDay(dayData = null) {
       <input type="date" value="${dayData ? dayData.date : today}" class="date-input">
       <span class="move-day-button" onclick="moveDayUp(this)" data-hover="Move Up"><i class='fas fa-angle-up'></i></span>
       <span class="move-day-button" onclick="moveDayDown(this)" data-hover="Move Down"><i class="fas fa-angle-down"></i></span>
-      <span class="trash-icon" onclick="deleteDay(this)" data-hover="Delete"><i class="fas fa-trash"></i></span>
+      <span class="trash-icon" onclick="deleteDay(this)" data-hover="Delete"><i class="fa fa-trash-o"></i></span>
     </div>
     <div class="location-container"></div>
     <button class="add-location" onclick="addLocation(this)">Add Location</button>
