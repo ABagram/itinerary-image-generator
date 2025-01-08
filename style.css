@@ -1,0 +1,331 @@
+body {
+  font-family: 'Manjari', sans-serif;
+  margin: 20px;
+  display: flex;
+  color: #223548;
+}
+
+input, button {
+  font-family: 'Manjari', sans-serif;
+}
+
+.planner-container {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.day-container {
+  border: 1px solid #f5f6f7;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  position: relative;
+}
+
+.day-number {
+  width: 50px;
+}
+
+.day-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.trash-icon {
+  cursor: pointer;
+  color: red;
+  font-size: 18px;
+}
+
+.trash-icon:hover::after,
+.delete-location:hover::after,
+.plus-button:hover::after,
+.move-button:hover::after {
+  content: attr(data-hover);
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #000;
+  color: #fff;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.location-row {
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+  position: relative;
+}
+
+.location-row input {
+  margin-right: 10px;
+}
+
+.delete-location {
+  cursor: pointer;
+  color: red;
+  font-size: 18px;
+  margin-left: 10px;
+}
+
+.add-location {
+  margin-top: 10px;
+}
+
+.add-day {
+  margin-top: 20px;
+  background-color: #0070F2;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.canvas-container {
+  flex: 1;
+  border: 1px solid #f5f6f7;
+  padding: 10px;
+  border-radius: 5px;
+  overflow-y: auto;
+  height: auto; /* Adjust height to auto */
+  background-color: #f7f7f7; /* Set background color to gray */
+}
+
+.timeline ul {
+  list-style: none;
+  padding: 0;
+  position: relative;
+}
+
+.timeline ul > li {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.timeline ul > li.day-separator {
+  background: none; /* No background for day separator */
+  padding: 0;
+  margin-bottom: 10px;
+}
+
+.timeline ul > li.day-separator > span {
+  font-weight: bold;
+  margin-left: 20px;
+}
+
+.timeline ul > li.day-content {
+  background-color: white; /* Set background color to white for each day's list */
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.timeline ul > li.day-content > ul {
+  margin-left: 20px;
+}
+
+.timeline ul > li.day-content > ul > li::before,
+.timeline ul > li.day-content > ul > li > ul > li::before {
+  font-family: 'FontAwesome';
+  content: '\f111';
+  position: absolute;
+  color: #0070F2;
+  background: none;
+  font-size: 10px;
+  z-index: 1;
+}
+
+.timeline ul > li.day-content > ul > li::after,
+.timeline ul > li.day-content > ul > li > ul > li::after {
+  content: '';
+  position: absolute;
+  left: 4.5px;
+  top: 10px;
+  width: 2px;
+  height: calc(120%);
+  background: #0070F2;
+  z-index: 0;
+}
+
+.timeline ul > li.day-content > ul > li:last-child::after,
+.timeline ul > li.day-content > ul > li > ul > li:last-child::after {
+  height: 10px; /* Ensure the line touches the last bullet */
+}
+
+.timeline ul > li.day-content > ul > li > span {
+  display: block;
+  margin-left: 20px;
+  font-weight: bold;
+}
+
+.timeline ul > li.day-content > ul > li > ul {
+  margin-left: 30px;
+  position: relative;
+}
+
+.timeline ul > li.day-content > ul > li > ul > li {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.timeline ul > li.day-content > ul > li > ul > li::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 0;
+  width: 6px;
+  height: 6px;
+  background: #0070F2;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.timeline ul > li.day-content > ul > li > ul > li::after {
+  content: '';
+  position: absolute;
+  left: -5px;
+  top: 6px;
+  width: 2px;
+  height: calc(100% - 6px);
+  background: #0070F2;
+  z-index: 0;
+}
+
+.timeline ul > li.day-content > ul > li > ul > li:last-child::after {
+  height: 6px; /* Ensure the line touches the last bullet */
+}
+
+/* .day-separator {
+  border-top: 1px solid #f5f6f7;
+  margin: 10px 0;
+  padding-top: 10px;
+} */
+
+.download-button {
+  background-color: #0070F2;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.download-button i {
+  margin-right: 5px;
+}
+
+.itinerary-info {
+  color: gray;
+  opacity: 0.7;
+  margin-bottom: 10px;
+}
+
+.fas{
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.plus-button {
+  cursor: pointer;
+  font-size: 18px;
+  margin-left: 10px;
+}
+
+.menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: white;
+  border: 1px solid #f5f6f7;
+  border-radius: 5px;
+  display: none;
+  z-index: 1000;
+}
+
+.menu button {
+  display: block;
+  width: 100%;
+  padding: 5px 10px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.menu button:hover {
+  background: #f0f0f0;
+}
+
+.past-item {
+  color: gray;
+}
+
+.past-item::before {
+  background: gray;
+}
+
+.past-item::after {
+  background: gray;
+}
+
+.move-button {
+  cursor: pointer;
+  font-size: 18px;
+  margin-left: 10px;
+}
+
+.control-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.control-buttons button {
+  background-color: #0070F2;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.move-day-button {
+  cursor: pointer;
+  font-size: 18px;
+  margin-left: 10px;
+}
+
+.day-header .move-day-button {
+  margin-left: 0;
+}
+
+.download-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: white;
+  border: 1px solid #f5f6f7;
+  border-radius: 5px;
+  display: none;
+  z-index: 1000;
+}
+
+.download-menu button {
+  display: block;
+  width: 100%;
+  padding: 5px 10px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.download-menu button:hover {
+  background: #f0f0f0;
+}
