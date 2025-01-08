@@ -291,8 +291,8 @@ function updateTimeline() {
     const endDate = formatDate(days[days.length - 1].querySelector('.date-input').value);
     const totalDays = days.length;
     document.getElementById('itinerary-info').innerHTML = `
-      <span style="background-color: #0070F2; color: white; padding: 2px 5px; border-radius: 3px;">${startDate} - ${endDate}</span>
-      <span style="background-color: #0070F2; color: white; padding: 2px 5px; border-radius: 3px; margin-left: 10px;">${totalDays} Days</span>
+      <span>${startDate} - ${endDate}</span>
+      <span class="trip-dates">${totalDays} Days</span>
     `;
   } else {
     document.getElementById('itinerary-info').textContent = '';
@@ -310,8 +310,8 @@ function updateTimeline() {
     daySeparator.className = 'day-separator';
     daySeparator.innerHTML = `
       <span class="day-no" style="background-color: #0070F2; color: white; padding: 2px 5px; border-radius: 3px;">Day ${dayNo}</span>
-      <span class="date" style="margin-left: 10px;">${date}</span>
       <span class="day-of-week" style="margin-left: 10px;">${dayOfWeek}</span>
+      <span class="date" style="margin-left: 10px;">${date}</span>
     `;
     if (isPast) {
       daySeparator.classList.add('past-item');

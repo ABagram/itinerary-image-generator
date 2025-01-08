@@ -9,13 +9,23 @@ h2{
     margin-left: 20px;
 }
 
-input, button, .day-no {
+input, button, .day-no, .trip-dates, .day-of-week{
   font-family: 'DM Sans', sans-serif;
   border: none;
   padding: 5px 10px;
   cursor: pointer;
   border-radius: 5px;
   background-color: #f5f6f7;
+}
+
+.trip-dates{
+    background-color: #0070F2;
+    color: white;
+}
+
+.day-of-week{
+    background-color: rgb(41, 41, 41);
+    color: white;
 }
 
 .planner-container {
@@ -147,6 +157,7 @@ input, button, .day-no {
   font-family: 'FontAwesome';
   content: '\f111';
   position: absolute;
+  top: 4.5px;
   color: #0070F2;
   background: none;
   font-size: 10px;
@@ -187,22 +198,20 @@ input, button, .day-no {
 }
 
 .timeline ul > li.day-content > ul > li > ul > li::before {
-  content: '';
+  font-family: 'FontAwesome';
+    content: '\f111';
   position: absolute;
   left: -10px;
-  top: 0;
-  width: 6px;
-  height: 6px;
-  background: #0070F2;
-  border-radius: 50%;
+  top: 5.75px;
   z-index: 1;
+  font-size: 1.2vh;
 }
 
 .timeline ul > li.day-content > ul > li > ul > li::after {
   content: '';
   position: absolute;
   left: -5px;
-  top: 6px;
+  top: 7.75px;
   width: 2px;
   height: calc(100% - 6px);
   background: #0070F2;
