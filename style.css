@@ -1,5 +1,5 @@
 body {
-  font-family: 'Manjari', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   margin: 20px;
   display: flex;
   color: #223548;
@@ -9,8 +9,8 @@ h2{
     margin-left: 20px;
 }
 
-input, button {
-  font-family: 'Manjari', sans-serif;
+input, button, .day-no {
+  font-family: 'DM Sans', sans-serif;
   border: none;
   padding: 5px 10px;
   cursor: pointer;
@@ -29,6 +29,12 @@ input, button {
   margin-bottom: 10px;
   border-radius: 5px;
   position: relative;
+}
+
+.day-container.active {
+    box-shadow: 
+    -10px -10px 15px rgba(255,255,255,0.05),
+    10px 10px 15px rgba(70,70,70,0.12);
 }
 
 .day-number {

@@ -50,6 +50,20 @@ function loadData() {
   }
 }
 
+function setActiveDayContainer(dayContainer) {
+  document.querySelectorAll('.day-container').forEach(container => {
+    container.classList.remove('active');
+  });
+  if (dayContainer) {
+    dayContainer.classList.add('active');
+  }
+}
+
+document.addEventListener('click', function(event) {
+  const dayContainer = event.target.closest('.day-container');
+  setActiveDayContainer(dayContainer);
+});
+
 function addDay(dayData = null) {
   dayCounter++;
 
@@ -108,8 +122,8 @@ function addLocation(button, locationData = null) {
   locationRow.className = 'location-row';
 
   locationRow.innerHTML = `
-    <input type="text" placeholder="Location" value="${locationData ? locationData.location : ''}" oninput="updateTimeline()" class="location-input">
-    <input type="text" placeholder="Destination" value="${locationData ? locationData.destination : ''}" oninput="updateTimeline()" class="destination-input">
+    <input type="text" placeholder="Location" value="${locationData ? locationData.location : ''}" oninput="updateTimeline()" class="location-input" autocomplete="on">
+    <input type="text" placeholder="Destination" value="${locationData ? locationData.destination : ''}" oninput="updateTimeline()" class="destination-input" autocomplete="on">
     <span class="delete-location" onclick="deleteLocation(this)" data-hover="Delete">&times;</span>
     <span class="move-button" onclick="moveUp(this)" data-hover="Move Up"><i class='fas fa-angle-up'></i></span>
     <span class="move-button" onclick="moveDown(this)" data-hover="Move Down"><i class="fas fa-angle-down"></i></span>
@@ -263,7 +277,7 @@ function formatDateWithDay(dateString) {
   const options = { year: 'numeric', month: 'short', day: 'numeric' };
   const date = new Date(dateString).toLocaleDateString('en-US', options);
   const day = new Date(dateString).toLocaleDateString('en-US', { weekday: 'short' });
-  return `${date} (${day})`;
+  return { date, day };
 }
 
 function updateTimeline() {
@@ -276,7 +290,10 @@ function updateTimeline() {
     const startDate = formatDate(days[0].querySelector('.date-input').value);
     const endDate = formatDate(days[days.length - 1].querySelector('.date-input').value);
     const totalDays = days.length;
-    document.getElementById('itinerary-info').textContent = `${startDate} - ${endDate} (${totalDays} Days)`;
+    document.getElementById('itinerary-info').innerHTML = `
+      <span style="background-color: #0070F2; color: white; padding: 2px 5px; border-radius: 3px;">${startDate} - ${endDate}</span>
+      <span style="background-color: #0070F2; color: white; padding: 2px 5px; border-radius: 3px; margin-left: 10px;">${totalDays} Days</span>
+    `;
   } else {
     document.getElementById('itinerary-info').textContent = '';
   }
@@ -285,13 +302,17 @@ function updateTimeline() {
 
   days.forEach(day => {
     const dayNo = day.dataset.dayNo;
-    const date = formatDateWithDay(day.querySelector('.date-input').value);
+    const { date, day: dayOfWeek } = formatDateWithDay(day.querySelector('.date-input').value);
     const dayDate = new Date(day.querySelector('.date-input').value).setHours(0, 0, 0, 0);
     const isPast = dayDate < today;
 
     const daySeparator = document.createElement('li');
     daySeparator.className = 'day-separator';
-    daySeparator.innerHTML = `<span>Day ${dayNo} - ${date}</span>`;
+    daySeparator.innerHTML = `
+      <span class="day-no" style="background-color: #0070F2; color: white; padding: 2px 5px; border-radius: 3px;">Day ${dayNo}</span>
+      <span class="date" style="margin-left: 10px;">${date}</span>
+      <span class="day-of-week" style="margin-left: 10px;">${dayOfWeek}</span>
+    `;
     if (isPast) {
       daySeparator.classList.add('past-item');
     }
