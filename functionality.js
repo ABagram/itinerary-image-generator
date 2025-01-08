@@ -412,10 +412,12 @@ function showDownloadMenu() {
 
 function downloadAsPNG() {
   const downloadButton = document.getElementById('download-button');
-  downloadButton.style.visibility = 'hidden';
-
+  const downloadMenu = document.getElementById('download-menu');
   const canvasContainer = document.getElementById('canvas-container');
   const scale = 2; // Increase the scale for better quality
+
+  downloadButton.style.visibility = 'hidden';
+  downloadMenu.style.visibility = 'hidden';
 
   html2canvas(canvasContainer, {
     scale: scale,
@@ -430,15 +432,18 @@ function downloadAsPNG() {
     link.click();
 
     downloadButton.style.visibility = 'visible';
+    downloadMenu.style.visibility = 'visible';
   });
 }
 
 function downloadAsPDF() {
   const downloadButton = document.getElementById('download-button');
-  downloadButton.style.visibility = 'hidden';
-
+  const downloadMenu = document.getElementById('download-menu');
   const canvasContainer = document.getElementById('canvas-container');
   const scale = 2; // Increase the scale for better quality
+
+  downloadButton.style.visibility = 'hidden';
+  downloadMenu.style.visibility = 'hidden';
 
   html2canvas(canvasContainer, {
     scale: scale,
@@ -456,6 +461,7 @@ function downloadAsPDF() {
     pdf.save('timeline.pdf');
 
     downloadButton.style.visibility = 'visible';
+    downloadMenu.style.visibility = 'visible';
   });
 }
 
