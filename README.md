@@ -1,6 +1,8 @@
 ## About
 This image generator automatically groups together neighboring "Destinations" with exactly the same "Locations", nesting them under the same list item. This feature allows users to view their itinerary at a glance.
 
+Given that there is already a previous input of **Location**, the program will assume that the new input(s) for **Destination** or **Meal** are to be nested under that Location.
+
 The image can then be downloaded for offline use.
 
 Graphics
