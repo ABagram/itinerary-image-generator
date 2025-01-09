@@ -309,7 +309,7 @@ function updateTimeline() {
     const daySeparator = document.createElement('li');
     daySeparator.className = 'day-separator';
     daySeparator.innerHTML = `
-      <span class="day-no" style="background-color: #0070F2; color: white; padding: 2px 5px; border-radius: 3px;">Day ${dayNo}</span>
+      <span class="day-no">Day ${dayNo}</span>
       <span class="day-of-week" style="margin-left: 10px;">${dayOfWeek}</span>
       <span class="date" style="margin-left: 10px;">${date}</span>
     `;

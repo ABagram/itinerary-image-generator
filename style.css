@@ -16,18 +16,27 @@ h2{
     margin-left: 20px;
 }
 
+input{
+  background-color: #f5f6f7;
+}
+
 input, button, .day-no, .trip-dates, .day-of-week{
   font-family: 'DM Sans', sans-serif;
   border: none;
   padding: 5px 10px;
   cursor: pointer;
   border-radius: 5px;
-  background-color: #f5f6f7;
 }
 
 .trip-dates{
     background-color: #0070F2;
     color: white;
+    margin-left: 10px;
+}
+
+.day-no{
+  background-color: #0070F2;
+  color: white;
 }
 
 .day-of-week{
@@ -183,31 +192,31 @@ input, button, .day-no, .trip-dates, .day-of-week{
   content: '';
   position: absolute;
   left: 4.5px;
-  top: 10px;
+  top: 4.5px; /* Start from the bullet of the first child */
   width: 2px;
-  height: calc(100% - 10px); /* Adjust height to end at the middle of the last bullet */
+  height: calc(100% - 4.5px); /* Calculate the length between the first and last child */
   background: #0070F2;
   z-index: 0;
 }
 
 .timeline ul > li.day-content > ul > li:last-child::after,
 .timeline ul > li.day-content > ul > li > ul > li:last-child::after {
-  height: 0; /* Ensure no line is drawn if it's the only bullet */
+  height: calc(100% - 12px); /* Ensure the line ends at the last bullet */
 }
 
 .timeline ul > li.day-content > ul > li > ul > li::after {
   content: '';
   position: absolute;
   left: -5px;
-  top: 7.75px;
+  top: 4.5px; /* Start from the bullet of the first child */
   width: 2px;
-  height: calc(100% - 7.75px); /* Adjust height to end at the middle of the last bullet */
+  height: calc(100% - 4.5px); /* Calculate the length between the first and last child */
   background: #0070F2;
   z-index: 0;
 }
 
 .timeline ul > li.day-content > ul > li > ul > li:last-child::after {
-  height: 0; /* Ensure no line is drawn if it's the only bullet */
+  height: calc(100% - 4.5px); /* Ensure the line ends at the last bullet */
 }
 
 .timeline ul > li.day-content > ul > li > span {
@@ -228,7 +237,7 @@ input, button, .day-no, .trip-dates, .day-of-week{
 
 .timeline ul > li.day-content > ul > li > ul > li::before {
   font-family: 'FontAwesome';
-    content: '\f111';
+  content: '\f111';
   position: absolute;
   left: -10px;
   top: 5.75px;
