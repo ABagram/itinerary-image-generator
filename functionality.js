@@ -94,8 +94,8 @@ function addDay(dayData = null) {
     </div>
     <div class="location-container"></div>
     <button class="add-location" onclick="addLocation(this)">Add Location</button>
-    <button class="add-location" onclick="addMeal(this)">Add Meal</button>
-    <button class="add-location" onclick="addTransportation(this)">Add Transportation</button>
+    <button class="add-location" onclick="addMeal(this, null, true)">Add Meal</button>
+    <button class="add-location" onclick="addTransportation(this, null, true)">Add Transportation</button>
   `;
 
   document.getElementById('days-container').appendChild(dayDiv);
@@ -161,7 +161,7 @@ function addLocationBetween(button) {
   updateTimeline();
 }
 
-function addMeal(button, locationData = null) {
+function addMeal(button, locationData = null, isDirectAdd = false) {
   const locationRow = document.createElement('div');
   locationRow.className = 'location-row';
 
@@ -186,11 +186,16 @@ function addMeal(button, locationData = null) {
     </div>
   `;
 
-  button.closest('.location-row').insertAdjacentElement('afterend', locationRow);
+  if (isDirectAdd) {
+    const locationContainer = button.closest('.day-container').querySelector('.location-container');
+    locationContainer.appendChild(locationRow);
+  } else {
+    button.closest('.location-row').insertAdjacentElement('afterend', locationRow);
+  }
   updateTimeline();
 }
 
-function addTransportation(button, locationData = null) {
+function addTransportation(button, locationData = null, isDirectAdd = false) {
   const locationRow = document.createElement('div');
   locationRow.className = 'location-row';
 
@@ -214,7 +219,12 @@ function addTransportation(button, locationData = null) {
     </div>
   `;
 
-  button.closest('.location-row').insertAdjacentElement('afterend', locationRow);
+  if (isDirectAdd) {
+    const locationContainer = button.closest('.day-container').querySelector('.location-container');
+    locationContainer.appendChild(locationRow);
+  } else {
+    button.closest('.location-row').insertAdjacentElement('afterend', locationRow);
+  }
   updateTimeline();
 }
 
