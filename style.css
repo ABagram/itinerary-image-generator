@@ -2,7 +2,14 @@ body {
   font-family: 'DM Sans', sans-serif;
   margin: 20px;
   display: flex;
+  flex-direction: column; /* Adjust layout for mobile */
   color: #223548;
+}
+
+@media (min-width: 768px) {
+  body {
+    flex-direction: row; /* Adjust layout for larger screens */
+  }
 }
 
 h2{
@@ -30,7 +37,14 @@ input, button, .day-no, .trip-dates, .day-of-week{
 
 .planner-container {
   flex: 1;
-  margin-right: 20px;
+  margin-bottom: 20px; /* Adjust margin for mobile */
+}
+
+@media (min-width: 768px) {
+  .planner-container {
+    margin-right: 20px; /* Adjust margin for larger screens */
+    margin-bottom: 0;
+  }
 }
 
 .day-container {
@@ -171,14 +185,29 @@ input, button, .day-no, .trip-dates, .day-of-week{
   left: 4.5px;
   top: 10px;
   width: 2px;
-  height: calc(120%);
+  height: calc(100% - 10px); /* Adjust height to end at the middle of the last bullet */
   background: #0070F2;
   z-index: 0;
 }
 
 .timeline ul > li.day-content > ul > li:last-child::after,
 .timeline ul > li.day-content > ul > li > ul > li:last-child::after {
-  height: 10px; /* Ensure the line touches the last bullet */
+  height: 0; /* Ensure no line is drawn if it's the only bullet */
+}
+
+.timeline ul > li.day-content > ul > li > ul > li::after {
+  content: '';
+  position: absolute;
+  left: -5px;
+  top: 7.75px;
+  width: 2px;
+  height: calc(100% - 7.75px); /* Adjust height to end at the middle of the last bullet */
+  background: #0070F2;
+  z-index: 0;
+}
+
+.timeline ul > li.day-content > ul > li > ul > li:last-child::after {
+  height: 0; /* Ensure no line is drawn if it's the only bullet */
 }
 
 .timeline ul > li.day-content > ul > li > span {
@@ -205,21 +234,6 @@ input, button, .day-no, .trip-dates, .day-of-week{
   top: 5.75px;
   z-index: 1;
   font-size: 1.2vh;
-}
-
-.timeline ul > li.day-content > ul > li > ul > li::after {
-  content: '';
-  position: absolute;
-  left: -5px;
-  top: 7.75px;
-  width: 2px;
-  height: calc(100% - 6px);
-  background: #0070F2;
-  z-index: 0;
-}
-
-.timeline ul > li.day-content > ul > li > ul > li:last-child::after {
-  height: 6px; /* Ensure the line touches the last bullet */
 }
 
 /* .day-separator {

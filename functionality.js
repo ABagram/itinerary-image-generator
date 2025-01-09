@@ -378,6 +378,17 @@ function updateTimeline() {
         dayContentList.appendChild(transportationItem);
       }
     });
+
+    // Ensure the vertical line is only drawn when there are multiple list items
+    if (dayContentList.children.length > 1) {
+      dayContentList.querySelectorAll('li').forEach((item, index) => {
+        if (index < dayContentList.children.length - 1) {
+          item.style.setProperty('--line-height', 'calc(100% - 10px)');
+        } else {
+          item.style.setProperty('--line-height', '0');
+        }
+      });
+    }
   });
 
   saveData();
