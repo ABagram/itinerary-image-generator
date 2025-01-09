@@ -8,7 +8,8 @@ The image can then be downloaded for offline use.
 ### References
 #### Graphics
 - Favicon: [Customer journey icons](https://www.flaticon.com/free-icon/destination_8221211?term=itinerary&related_id=8221211) created by [Icon Hubs](https://www.flaticon.com/authors/icon-hubs) - Flaticon
-- UI: [Fiori for Android Design Guidelines](https://experience.sap.com/fiori-design-android/2020/06/)
+- Layout: [Fiori for Android Design Guidelines](https://experience.sap.com/fiori-design-android/2020/06/)
+- Font: [DM Sans](https://fonts.google.com/share?selection.family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000)
 - Icons: [Font Awesome](https://fontawesome.com) | [Icons Reference](https://www.w3schools.com/icons/icons_reference.asp)
 #### Code
 The code was entirely built using Artificial Intelligence (AI) tools as @ABagram currently has limited knowledge on JavaScript, which could impact the functionality and greatly reduce the quality of the user experience (UX). She thought that she could immediately make use of the website if it were developed to cater to her intended use.
