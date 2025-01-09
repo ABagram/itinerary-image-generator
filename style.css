@@ -149,8 +149,19 @@ input, button, .day-no, .trip-dates, .day-of-week{
   position: relative;
 }
 
+.timeline ul ul::before {
+  content: '';
+  position: absolute;
+  top: calc(1.2vh / 2); /* Start from half the height of the first child */
+  bottom: calc(1.2vh / 2); /* End at half the height of the last child */
+  left: 5px; /* Adjust based on bullet position */
+  width: 2px;
+  background: currentColor; /* Inherit color from the bullets */
+  z-index: 0;
+}
+
 .timeline ul > li {
-  margin-bottom: 20px;
+  margin-bottom: 0; /* Remove spacing between list items */
   position: relative;
 }
 
@@ -162,17 +173,17 @@ input, button, .day-no, .trip-dates, .day-of-week{
 
 .timeline ul > li.day-separator > span {
   font-weight: bold;
-  margin-left: 20px;
 }
 
 .timeline ul > li.day-content {
   background-color: white; /* Set background color to white for each day's list */
   padding: 10px;
   border-radius: 5px;
+  margin-bottom: 20px;
 }
 
 .timeline ul > li.day-content > ul {
-  margin-left: 20px;
+  margin-left: 10px;
 }
 
 .timeline ul > li.day-content > ul > li::before,
@@ -187,37 +198,6 @@ input, button, .day-no, .trip-dates, .day-of-week{
   z-index: 1;
 }
 
-.timeline ul > li.day-content > ul > li::after,
-.timeline ul > li.day-content > ul > li > ul > li::after {
-  content: '';
-  position: absolute;
-  left: 4.5px;
-  top: 4.5px; /* Start from the bullet of the first child */
-  width: 2px;
-  height: calc(100% - 4.5px); /* Calculate the length between the first and last child */
-  background: #0070F2;
-  z-index: 0;
-}
-
-.timeline ul > li.day-content > ul > li:last-child::after,
-.timeline ul > li.day-content > ul > li > ul > li:last-child::after {
-  height: calc(100% - 12px); /* Ensure the line ends at the last bullet */
-}
-
-.timeline ul > li.day-content > ul > li > ul > li::after {
-  content: '';
-  position: absolute;
-  left: -5px;
-  top: 4.5px; /* Start from the bullet of the first child */
-  width: 2px;
-  height: calc(100% - 4.5px); /* Calculate the length between the first and last child */
-  background: #0070F2;
-  z-index: 0;
-}
-
-.timeline ul > li.day-content > ul > li > ul > li:last-child::after {
-  height: calc(100% - 4.5px); /* Ensure the line ends at the last bullet */
-}
 
 .timeline ul > li.day-content > ul > li > span {
   display: block;
@@ -232,7 +212,6 @@ input, button, .day-no, .trip-dates, .day-of-week{
 
 .timeline ul > li.day-content > ul > li > ul > li {
   position: relative;
-  margin-bottom: 10px;
 }
 
 .timeline ul > li.day-content > ul > li > ul > li::before {
@@ -242,20 +221,15 @@ input, button, .day-no, .trip-dates, .day-of-week{
   left: -10px;
   top: 5.75px;
   z-index: 1;
-  font-size: 1.2vh;
+  font-size: 1vh;
 }
-
-/* .day-separator {
-  border-top: 1px solid #f5f6f7;
-  margin: 10px 0;
-  padding-top: 10px;
-} */
 
 .download-button {
   background-color: #0070F2;
   color: white;
   display: flex;
   align-items: center;
+  margin-right: 20px;
 }
 
 .download-button i {

@@ -310,8 +310,8 @@ function updateTimeline() {
     daySeparator.className = 'day-separator';
     daySeparator.innerHTML = `
       <span class="day-no">Day ${dayNo}</span>
-      <span class="day-of-week" style="margin-left: 10px;">${dayOfWeek}</span>
-      <span class="date" style="margin-left: 10px;">${date}</span>
+      <span class="day-of-week">${dayOfWeek}</span>
+      <span class="date">${date}</span>
     `;
     if (isPast) {
       daySeparator.classList.add('past-item');
