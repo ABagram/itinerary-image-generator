@@ -468,24 +468,10 @@ function updateTimeline() {
         const destinationContent = document.createElement('span');
         if (timestamp && enableTimestamp) {
           const timestampSpan = document.createElement('span');
-          timestampSpan.textContent = timestamp || '\u00A0'; // Replace missing timestamp with whitespace
-          timestampSpan.style.marginRight = '10px';
+          timestampSpan.textContent = timestamp;
+          timestampSpan.style.width = '60px'; // Allot 70px for timestampSpan
+          timestampSpan.style.display = 'inline-block'; // Ensure it takes up space
           destinationContent.appendChild(timestampSpan);
-
-          const currentTime = new Date();
-          const [hours, minutes] = timestamp.split(':');
-          const destinationTime = new Date(dayDate);
-          destinationTime.setHours(hours, minutes);
-
-          if (destinationTime < currentTime) {
-            destinationItem.classList.add('past-item');
-          } else {
-            destinationItem.classList.add('current-or-future-destination');
-          }
-        } else if (isPast) {
-          destinationItem.classList.add('past-item');
-        } else {
-          destinationItem.classList.add('current-or-future-destination');
         }
         destinationContent.appendChild(document.createTextNode(destination));
         destinationItem.appendChild(destinationContent);
@@ -497,20 +483,10 @@ function updateTimeline() {
         const mealContent = document.createElement('span');
         if (timestamp && enableTimestamp) {
           const timestampSpan = document.createElement('span');
-          timestampSpan.textContent = timestamp || '\u00A0'; // Replace missing timestamp with whitespace
-          timestampSpan.style.marginRight = '10px';
+          timestampSpan.textContent = timestamp;
+          timestampSpan.style.width = '70px'; // Allot 70px for timestampSpan
+          timestampSpan.style.display = 'inline-block'; // Ensure it takes up space
           mealContent.appendChild(timestampSpan);
-
-          const currentTime = new Date();
-          const [hours, minutes] = timestamp.split(':');
-          const mealTime = new Date(dayDate);
-          mealTime.setHours(hours, minutes);
-
-          if (mealTime < currentTime) {
-            mealItem.classList.add('past-item');
-          }
-        } else if (isPast) {
-          mealItem.classList.add('past-item');
         }
         mealContent.appendChild(document.createTextNode(`${meal}: ${restaurant}`));
         mealItem.appendChild(mealContent);
@@ -522,20 +498,10 @@ function updateTimeline() {
         const transportationContent = document.createElement('span');
         if (timestamp && enableTimestamp) {
           const timestampSpan = document.createElement('span');
-          timestampSpan.textContent = timestamp || '\u00A0'; // Replace missing timestamp with whitespace
-          timestampSpan.style.marginRight = '10px';
+          timestampSpan.textContent = timestamp;
+          timestampSpan.style.width = '70px'; // Allot 70px for timestampSpan
+          timestampSpan.style.display = 'inline-block'; // Ensure it takes up space
           transportationContent.appendChild(timestampSpan);
-
-          const currentTime = new Date();
-          const [hours, minutes] = timestamp.split(':');
-          const transportationTime = new Date(dayDate);
-          transportationTime.setHours(hours, minutes);
-
-          if (transportationTime < currentTime) {
-            transportationItem.classList.add('past-item');
-          }
-        } else if (isPast) {
-          transportationItem.classList.add('past-item');
         }
         transportationContent.appendChild(document.createTextNode(`Transportation: ${transportation}`));
         transportationItem.appendChild(transportationContent);

@@ -177,7 +177,7 @@ input, button, .day-no, .trip-dates, .day-of-week, .transportation-type-select, 
   content: '';
   position: absolute;
   top: calc(1.2vh / 2); /* Start from half the height of the first child */
-  bottom: calc(1.2vh / 2); /* End at half the height of the last child */
+  bottom: calc(1.2vh); /* End at half the height of the last child */
   left: 5px; /* Adjust based on bullet position */
   width: 2px;
   background: currentColor; /* Inherit color from the bullets */
@@ -224,7 +224,6 @@ input, button, .day-no, .trip-dates, .day-of-week, .transportation-type-select, 
   background: none;
   font-size: 10px;
   z-index: 1;
-  left: 5px; /* Adjust based on bullet position */
 }
 
 .timeline ul > li.day-content > ul > li > span {
@@ -249,7 +248,7 @@ input, button, .day-no, .trip-dates, .day-of-week, .transportation-type-select, 
   display: inline-block;
   width: 7vh; /* Adjust width to align bullets */
   text-align: left;
-  margin-left: 50vh;
+  margin-left: 0; /* Remove indent between timestamp and list item */
 }
 
 .timeline ul > li.day-content > ul > li > ul > li > ul > li {
@@ -263,7 +262,7 @@ input, button, .day-no, .trip-dates, .day-of-week, .transportation-type-select, 
   display: inline-block;
   width: 7vh; /* Adjust width to align timestamps */
   text-align: left;
-  margin-left: 50vh;
+  margin-left: 0; /* Remove indent between timestamp and list item */
 }
 
 .timeline ul > li.day-content > ul > li > ul > li > ul > li {
@@ -277,7 +276,7 @@ input, button, .day-no, .trip-dates, .day-of-week, .transportation-type-select, 
   display: inline-block;
   width: 7vh; /* Adjust width to align timestamps */
   text-align: left;
-  margin-left: 50vh;
+  margin-left: 0; /* Remove indent between timestamp and list item */
 }
 
 .timeline ul > li.day-content > ul > li > ul > li.future-destination {
