@@ -254,7 +254,7 @@ function addMeal(button, locationData = null, isDirectAdd = false) {
     </datalist>
     <span class="delete-location" onclick="deleteLocation(this)" data-hover="Delete">&times;</span>
     <span class="move-button" onclick="moveUp(this)" data-hover="Move Up"><i class='fas fa-angle-up'></i></span>
-    <span class="move-button" onclick="moveDown(this)" data-hover="Move Down"><i class="fas fa-angle-down"></i></span>
+    <span class="move-button" onclick="moveDown(this)" data-hover="Move Down"><i class='fas fa-angle-down'></i></span>
     <span class="plus-button" onclick="showMenu(this)" data-hover="Insert">+</span>
     <div class="menu">
       <button onclick="addLocationBetween(this)">Add Destination</button>
@@ -301,7 +301,7 @@ function addTransportation(button, locationData = null, isDirectAdd = false) {
       <option value="Train">
     </datalist>
     <span class="move-button" onclick="moveUp(this)" data-hover="Move Up"><i class='fas fa-angle-up'></i></span>
-    <span class="move-button" onclick="moveDown(this)" data-hover="Move Down"><i class="fas fa-angle-down"></i></span>
+    <span class="move-button" onclick="moveDown(this)" data-hover="Move Down"><i class='fas fa-angle-down'></i></span>
     <span class="plus-button" onclick="showMenu(this)" data-hover="Insert">+</span>
     <div class="menu">
       <button onclick="addLocationBetween(this)">Add Destination</button>
@@ -466,11 +466,15 @@ function updateTimeline() {
       if (destination) {
         const destinationItem = document.createElement('li');
         const destinationContent = document.createElement('span');
-        if (timestamp && enableTimestamp) {
+        if (enableTimestamp) {
           const timestampSpan = document.createElement('span');
-          timestampSpan.textContent = timestamp;
-          timestampSpan.style.width = '60px'; // Allot 70px for timestampSpan
+          timestampSpan.style.width = '70px'; // Allot 70px for timestampSpan
           timestampSpan.style.display = 'inline-block'; // Ensure it takes up space
+          timestampSpan.style.fontSize = '75%'; // Set font size to 75% of list item font size
+          timestampSpan.style.verticalAlign = 'middle'; // Vertically center the timestamp
+          if (timestamp) {
+            timestampSpan.textContent = timestamp;
+          }
           destinationContent.appendChild(timestampSpan);
         }
         destinationContent.appendChild(document.createTextNode(destination));
@@ -481,11 +485,15 @@ function updateTimeline() {
       if (meal && restaurant) {
         const mealItem = document.createElement('li');
         const mealContent = document.createElement('span');
-        if (timestamp && enableTimestamp) {
+        if (enableTimestamp) {
           const timestampSpan = document.createElement('span');
-          timestampSpan.textContent = timestamp;
           timestampSpan.style.width = '70px'; // Allot 70px for timestampSpan
           timestampSpan.style.display = 'inline-block'; // Ensure it takes up space
+          timestampSpan.style.fontSize = '75%'; // Set font size to 75% of list item font size
+          timestampSpan.style.verticalAlign = 'middle'; // Vertically center the timestamp
+          if (timestamp) {
+            timestampSpan.textContent = timestamp;
+          }
           mealContent.appendChild(timestampSpan);
         }
         mealContent.appendChild(document.createTextNode(`${meal}: ${restaurant}`));
@@ -496,11 +504,15 @@ function updateTimeline() {
       if (transportation) {
         const transportationItem = document.createElement('li');
         const transportationContent = document.createElement('span');
-        if (timestamp && enableTimestamp) {
+        if (enableTimestamp) {
           const timestampSpan = document.createElement('span');
-          timestampSpan.textContent = timestamp;
           timestampSpan.style.width = '70px'; // Allot 70px for timestampSpan
           timestampSpan.style.display = 'inline-block'; // Ensure it takes up space
+          timestampSpan.style.fontSize = '75%'; // Set font size to 75% of list item font size
+          timestampSpan.style.verticalAlign = 'middle'; // Vertically center the timestamp
+          if (timestamp) {
+            timestampSpan.textContent = timestamp;
+          }
           transportationContent.appendChild(timestampSpan);
         }
         transportationContent.appendChild(document.createTextNode(`Transportation: ${transportation}`));

@@ -248,7 +248,7 @@ input, button, .day-no, .trip-dates, .day-of-week, .transportation-type-select, 
   display: inline-block;
   width: 7vh; /* Adjust width to align bullets */
   text-align: left;
-  margin-left: 0; /* Remove indent between timestamp and list item */
+  margin-left: 50vh;
 }
 
 .timeline ul > li.day-content > ul > li > ul > li > ul > li {
@@ -262,7 +262,7 @@ input, button, .day-no, .trip-dates, .day-of-week, .transportation-type-select, 
   display: inline-block;
   width: 7vh; /* Adjust width to align timestamps */
   text-align: left;
-  margin-left: 0; /* Remove indent between timestamp and list item */
+  margin-left: 50vh;
 }
 
 .timeline ul > li.day-content > ul > li > ul > li > ul > li {
@@ -276,7 +276,7 @@ input, button, .day-no, .trip-dates, .day-of-week, .transportation-type-select, 
   display: inline-block;
   width: 7vh; /* Adjust width to align timestamps */
   text-align: left;
-  margin-left: 0; /* Remove indent between timestamp and list item */
+  margin-left: 50vh;
 }
 
 .timeline ul > li.day-content > ul > li > ul > li.future-destination {
