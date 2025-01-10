@@ -1,5 +1,6 @@
 let dayCounter = 0;
 let userId;
+let enableTimestamp = JSON.parse(localStorage.getItem('enableTimestamp')) || false;
 
 function generateUserId() {
   return 'user-' + Math.random().toString(36).substr(2, 9);
@@ -12,6 +13,15 @@ function getUserId() {
     localStorage.setItem('userId', id);
   }
   return id;
+}
+
+function toggleTimestamp() {
+  enableTimestamp = !enableTimestamp;
+  localStorage.setItem('enableTimestamp', enableTimestamp);
+  document.querySelectorAll('.timestamp-input').forEach(input => {
+    input.style.display = enableTimestamp ? 'inline-block' : 'none';
+  });
+  updateTimeline();
 }
 
 function saveData() {
@@ -29,7 +39,10 @@ function saveData() {
       const meal = locationRow.querySelector('.meal-input') ? locationRow.querySelector('.meal-input').value : null;
       const restaurant = locationRow.querySelector('.restaurant-input') ? locationRow.querySelector('.restaurant-input').value : null;
       const transportation = locationRow.querySelector('.transportation-input') ? locationRow.querySelector('.transportation-input').value : null;
-      locations.push({ location, destination, meal, restaurant, transportation });
+      const timestamp = locationRow.querySelector('.timestamp-input') ? locationRow.querySelector('.timestamp-input').value : null;
+      const transportationType = locationRow.querySelector('.transportation-type-select') ? locationRow.querySelector('.transportation-type-select').value : null;
+      const hasError = locationRow.querySelector('.error-text') ? true : false;
+      locations.push({ location, destination, meal, restaurant, transportation, timestamp, transportationType, hasError });
     });
 
     daysData.push({ dayNo, date, locations });
@@ -48,6 +61,11 @@ function loadData() {
   } else {
     addDay();
   }
+
+  const enableTimestamp = JSON.parse(localStorage.getItem('enableTimestamp'));
+  document.querySelectorAll('.timestamp-input').forEach(input => {
+    input.style.display = enableTimestamp ? 'inline-block' : 'none';
+  });
 }
 
 function setActiveDayContainer(dayContainer) {
@@ -86,14 +104,14 @@ function addDay(dayData = null) {
 
   dayDiv.innerHTML = `
     <div class="day-header">
-      <span>DAY <input type="number" class="day-number" value="${dayCounter}" onchange="updateDayNumbers()"></span>
+      <span>DAY <span class="day-number">${dayCounter}</span></span>
       <input type="date" value="${dayData ? dayData.date : today}" class="date-input">
       <span class="move-day-button" onclick="moveDayUp(this)" data-hover="Move Up"><i class='fas fa-angle-up'></i></span>
       <span class="move-day-button" onclick="moveDayDown(this)" data-hover="Move Down"><i class="fas fa-angle-down"></i></span>
       <span class="trash-icon" onclick="deleteDay(this)" data-hover="Delete"><i class="fa fa-trash-o"></i></span>
     </div>
     <div class="location-container"></div>
-    <button class="add-location" onclick="addLocation(this)">Add Location</button>
+    <button class="add-location" onclick="addLocation(this)">Add Destination</button>
     <button class="add-location" onclick="addMeal(this, null, true)">Add Meal</button>
     <button class="add-location" onclick="addTransportation(this, null, true)">Add Transportation</button>
   `;
@@ -117,6 +135,46 @@ function addDay(dayData = null) {
   updateTimeline();
 }
 
+function validateTimestamps(dayContainer) {
+  if (!enableTimestamp) return true;
+
+  const locationRows = dayContainer.querySelectorAll('.location-row');
+  let previousTimestamp = null;
+  let isValid = true;
+
+  locationRows.forEach(row => {
+    const timestampInput = row.querySelector('.timestamp-input');
+    const errorText = row.querySelector('.error-text');
+
+    if (timestampInput) {
+      const timestamp = timestampInput.value;
+      if (timestamp) {
+        if (previousTimestamp && timestamp <= previousTimestamp) {
+          isValid = false;
+          if (!errorText) {
+            const errorSpan = document.createElement('span');
+            errorSpan.className = 'error-text';
+            errorSpan.style.color = 'red';
+            errorSpan.style.display = 'block';
+            errorSpan.style.marginTop = '5px';
+            errorSpan.textContent = 'Timestamps must be in chronological order.';
+            row.appendChild(errorSpan);
+          }
+        } else if (errorText) {
+          errorText.remove();
+        }
+        previousTimestamp = timestamp;
+      } else if (errorText) {
+        errorText.remove();
+      }
+    }
+  });
+
+  updateTimeline(); // Always update timeline
+  saveData(); // Save data after validation
+  return isValid;
+}
+
 function addLocation(button, locationData = null) {
   const locationRow = document.createElement('div');
   locationRow.className = 'location-row';
@@ -129,14 +187,26 @@ function addLocation(button, locationData = null) {
     <span class="move-button" onclick="moveDown(this)" data-hover="Move Down"><i class="fas fa-angle-down"></i></span>
     <span class="plus-button" onclick="showMenu(this)" data-hover="Insert">+</span>
     <div class="menu">
-      <button onclick="addLocationBetween(this)">Add Location</button>
+      <button onclick="addLocationBetween(this)">Add Destination</button>
       <button onclick="addMeal(this)">Add Meal</button>
       <button onclick="addTransportation(this)">Add Transportation</button>
     </div>
   `;
 
+  const timestampInput = document.createElement('input');
+  timestampInput.type = 'time';
+  timestampInput.className = 'timestamp-input';
+  timestampInput.style.display = enableTimestamp ? 'inline-block' : 'none';
+  timestampInput.value = locationData ? locationData.timestamp : '';
+  timestampInput.oninput = () => {
+    updateTimeline();
+    validateTimestamps(button.closest('.day-container'));
+  };
+  locationRow.insertBefore(timestampInput, locationRow.firstChild);
+
   button.previousElementSibling.appendChild(locationRow);
   updateTimeline();
+  validateTimestamps(button.closest('.day-container'));
 }
 
 function addLocationBetween(button) {
@@ -151,11 +221,18 @@ function addLocationBetween(button) {
     <span class="move-button" onclick="moveDown(this)" data-hover="Move Down"><i class="fas fa-angle-down"></i></span>
     <span class="plus-button" onclick="showMenu(this)" data-hover="Insert">+</span>
     <div class="menu">
-      <button onclick="addLocationBetween(this)">Add Location</button>
+      <button onclick="addLocationBetween(this)">Add Destination</button>
       <button onclick="addMeal(this)">Add Meal</button>
       <button onclick="addTransportation(this)">Add Transportation</button>
     </div>
   `;
+
+  const timestampInput = document.createElement('input');
+  timestampInput.type = 'time';
+  timestampInput.className = 'timestamp-input';
+  timestampInput.style.display = enableTimestamp ? 'inline-block' : 'none';
+  timestampInput.oninput = updateTimeline;
+  locationRow.insertBefore(timestampInput, locationRow.firstChild);
 
   button.closest('.location-row').insertAdjacentElement('afterend', locationRow);
   updateTimeline();
@@ -180,11 +257,19 @@ function addMeal(button, locationData = null, isDirectAdd = false) {
     <span class="move-button" onclick="moveDown(this)" data-hover="Move Down"><i class="fas fa-angle-down"></i></span>
     <span class="plus-button" onclick="showMenu(this)" data-hover="Insert">+</span>
     <div class="menu">
-      <button onclick="addLocationBetween(this)">Add Location</button>
+      <button onclick="addLocationBetween(this)">Add Destination</button>
       <button onclick="addMeal(this)">Add Meal</button>
       <button onclick="addTransportation(this)">Add Transportation</button>
     </div>
   `;
+
+  const timestampInput = document.createElement('input');
+  timestampInput.type = 'time';
+  timestampInput.className = 'timestamp-input';
+  timestampInput.style.display = enableTimestamp ? 'inline-block' : 'none';
+  timestampInput.value = locationData ? locationData.timestamp : '';
+  timestampInput.oninput = updateTimeline;
+  locationRow.insertBefore(timestampInput, locationRow.firstChild);
 
   if (isDirectAdd) {
     const locationContainer = button.closest('.day-container').querySelector('.location-container');
@@ -200,24 +285,38 @@ function addTransportation(button, locationData = null, isDirectAdd = false) {
   locationRow.className = 'location-row';
 
   locationRow.innerHTML = `
+    <select class="transportation-type-select">
+      <option value="destination">In-between Destinations</option>
+      <option value="location">In-between Locations</option>
+    </select>
     <input type="text" placeholder="Transportation Type" value="${locationData ? locationData.transportation : ''}" class="transportation-input" list="transportation-options">
     <span class="delete-location" onclick="deleteLocation(this)" data-hover="Delete">&times;</span>
     <datalist id="transportation-options">
-      <option value="Bus">
-      <option value="Train">
-      <option value="Flight">
-      <option value="Car Rental">
       <option value="Bicycle">
+      <option value="Bus">
+      <option value="Car Rental">
+      <option value="Flight">
+      <option value="Jeepney">
+      <option value="Taxi">
+      <option value="Train">
     </datalist>
     <span class="move-button" onclick="moveUp(this)" data-hover="Move Up"><i class='fas fa-angle-up'></i></span>
     <span class="move-button" onclick="moveDown(this)" data-hover="Move Down"><i class="fas fa-angle-down"></i></span>
     <span class="plus-button" onclick="showMenu(this)" data-hover="Insert">+</span>
     <div class="menu">
-      <button onclick="addLocationBetween(this)">Add Location</button>
+      <button onclick="addLocationBetween(this)">Add Destination</button>
       <button onclick="addMeal(this)">Add Meal</button>
       <button onclick="addTransportation(this)">Add Transportation</button>
     </div>
   `;
+
+  const timestampInput = document.createElement('input');
+  timestampInput.type = 'time';
+  timestampInput.className = 'timestamp-input';
+  timestampInput.style.display = enableTimestamp ? 'inline-block' : 'none';
+  timestampInput.value = locationData ? locationData.timestamp : '';
+  timestampInput.oninput = updateTimeline;
+  locationRow.insertBefore(timestampInput, locationRow.firstChild);
 
   if (isDirectAdd) {
     const locationContainer = button.closest('.day-container').querySelector('.location-container');
@@ -261,8 +360,8 @@ function updateDayNumbers() {
 
   days.forEach((day, index) => {
     dayCounter++;
-    const dayNumberInput = day.querySelector('.day-number');
-    dayNumberInput.value = dayCounter;
+    const dayNumberSpan = day.querySelector('.day-number');
+    dayNumberSpan.textContent = dayCounter;
     day.dataset.dayNo = dayCounter;
 
     // Update default date based on sequence
@@ -315,6 +414,7 @@ function updateTimeline() {
     const { date, day: dayOfWeek } = formatDateWithDay(day.querySelector('.date-input').value);
     const dayDate = new Date(day.querySelector('.date-input').value).setHours(0, 0, 0, 0);
     const isPast = dayDate < today;
+    const isCurrentOrFuture = dayDate >= today;
 
     const daySeparator = document.createElement('li');
     daySeparator.className = 'day-separator';
@@ -348,6 +448,8 @@ function updateTimeline() {
       const meal = locationRow.querySelector('.meal-input') ? locationRow.querySelector('.meal-input').value : null;
       const restaurant = locationRow.querySelector('.restaurant-input') ? locationRow.querySelector('.restaurant-input').value : null;
       const transportation = locationRow.querySelector('.transportation-input') ? locationRow.querySelector('.transportation-input').value : null;
+      const timestamp = locationRow.querySelector('.timestamp-input') ? locationRow.querySelector('.timestamp-input').value : null;
+      const transportationType = locationRow.querySelector('.transportation-type-select') ? locationRow.querySelector('.transportation-type-select').value : null;
 
       if (location && location !== currentLocation) {
         currentLocation = location;
@@ -363,29 +465,85 @@ function updateTimeline() {
 
       if (destination) {
         const destinationItem = document.createElement('li');
-        destinationItem.textContent = destination;
-        if (isPast) {
+        const destinationContent = document.createElement('span');
+        if (timestamp && enableTimestamp) {
+          const timestampSpan = document.createElement('span');
+          timestampSpan.textContent = timestamp || '\u00A0'; // Replace missing timestamp with whitespace
+          timestampSpan.style.marginRight = '10px';
+          destinationContent.appendChild(timestampSpan);
+
+          const currentTime = new Date();
+          const [hours, minutes] = timestamp.split(':');
+          const destinationTime = new Date(dayDate);
+          destinationTime.setHours(hours, minutes);
+
+          if (destinationTime < currentTime) {
+            destinationItem.classList.add('past-item');
+          } else {
+            destinationItem.classList.add('current-or-future-destination');
+          }
+        } else if (isPast) {
           destinationItem.classList.add('past-item');
+        } else {
+          destinationItem.classList.add('current-or-future-destination');
         }
+        destinationContent.appendChild(document.createTextNode(destination));
+        destinationItem.appendChild(destinationContent);
         currentNestedList.appendChild(destinationItem);
       }
 
       if (meal && restaurant) {
         const mealItem = document.createElement('li');
-        mealItem.textContent = `${meal}: ${restaurant}`;
-        if (isPast) {
+        const mealContent = document.createElement('span');
+        if (timestamp && enableTimestamp) {
+          const timestampSpan = document.createElement('span');
+          timestampSpan.textContent = timestamp || '\u00A0'; // Replace missing timestamp with whitespace
+          timestampSpan.style.marginRight = '10px';
+          mealContent.appendChild(timestampSpan);
+
+          const currentTime = new Date();
+          const [hours, minutes] = timestamp.split(':');
+          const mealTime = new Date(dayDate);
+          mealTime.setHours(hours, minutes);
+
+          if (mealTime < currentTime) {
+            mealItem.classList.add('past-item');
+          }
+        } else if (isPast) {
           mealItem.classList.add('past-item');
         }
+        mealContent.appendChild(document.createTextNode(`${meal}: ${restaurant}`));
+        mealItem.appendChild(mealContent);
         currentNestedList.appendChild(mealItem);
       }
 
       if (transportation) {
         const transportationItem = document.createElement('li');
-        transportationItem.textContent = `Transportation: ${transportation}`;
-        if (isPast) {
+        const transportationContent = document.createElement('span');
+        if (timestamp && enableTimestamp) {
+          const timestampSpan = document.createElement('span');
+          timestampSpan.textContent = timestamp || '\u00A0'; // Replace missing timestamp with whitespace
+          timestampSpan.style.marginRight = '10px';
+          transportationContent.appendChild(timestampSpan);
+
+          const currentTime = new Date();
+          const [hours, minutes] = timestamp.split(':');
+          const transportationTime = new Date(dayDate);
+          transportationTime.setHours(hours, minutes);
+
+          if (transportationTime < currentTime) {
+            transportationItem.classList.add('past-item');
+          }
+        } else if (isPast) {
           transportationItem.classList.add('past-item');
         }
-        dayContentList.appendChild(transportationItem);
+        transportationContent.appendChild(document.createTextNode(`Transportation: ${transportation}`));
+        transportationItem.appendChild(transportationContent);
+        if (transportationType === 'destination') {
+          currentNestedList.appendChild(transportationItem);
+        } else {
+          dayContentList.appendChild(transportationItem);
+        }
       }
     });
 
@@ -404,12 +562,16 @@ function updateTimeline() {
   saveData();
 }
 
+/* ...existing code... */
+
 function moveUp(button) {
   const row = button.closest('.location-row');
   const previousRow = row.previousElementSibling;
   if (previousRow && previousRow.classList.contains('location-row')) {
     row.parentNode.insertBefore(row, previousRow);
     updateTimeline();
+    validateTimestamps(button.closest('.day-container'));
+    saveData(); // Save data after moving up
   }
 }
 
@@ -419,6 +581,8 @@ function moveDown(button) {
   if (nextRow && nextRow.classList.contains('location-row')) {
     row.parentNode.insertBefore(nextRow, row);
     updateTimeline();
+    validateTimestamps(button.closest('.day-container'));
+    saveData(); // Save data after moving down
   }
 }
 
@@ -551,4 +715,8 @@ function clearData() {
 window.onload = () => {
   userId = getUserId();
   loadData();
+  document.querySelectorAll('.timestamp-input').forEach(input => {
+    input.style.display = enableTimestamp ? 'inline-block' : 'none';
+  });
+  document.getElementById('timestamp-toggle').checked = enableTimestamp;
 };

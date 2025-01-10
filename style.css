@@ -20,12 +20,20 @@ input{
   background-color: #f5f6f7;
 }
 
-input, button, .day-no, .trip-dates, .day-of-week{
+input, button, .day-no, .trip-dates, .day-of-week, .transportation-type-select, .transportation-input{
   font-family: 'DM Sans', sans-serif;
   border: none;
   padding: 5px 10px;
   cursor: pointer;
   border-radius: 5px;
+}
+
+.transportation-type-select{
+  background-color: #f5f6f7;
+}
+
+.transportation-input{
+  margin-left: 10px;
 }
 
 .trip-dates{
@@ -80,6 +88,11 @@ input, button, .day-no, .trip-dates, .day-of-week{
   align-items: center;
 }
 
+.day-header span,
+.day-header input.date-input {
+  font-weight: 900;
+}
+
 .trash-icon {
   font-size: 15px;
 }
@@ -99,6 +112,17 @@ input, button, .day-no, .trip-dates, .day-of-week{
   border-radius: 3px;
   font-size: 12px;
   white-space: nowrap;
+  z-index: 1000;
+}
+
+@media (max-width: 768px) {
+  .trash-icon:hover::after,
+  .delete-location:hover::after,
+  .plus-button:hover::after,
+  .move-button:hover::after {
+    font-size: 10px;
+    top: -20px;
+  }
 }
 
 .location-row {
@@ -160,6 +184,10 @@ input, button, .day-no, .trip-dates, .day-of-week{
   z-index: 0;
 }
 
+.timeline ul ul ul::before {
+  content: none; /* Remove the vertical line for nested list in the nested list of the nested list */
+}
+
 .timeline ul > li {
   margin-bottom: 0; /* Remove spacing between list items */
   position: relative;
@@ -196,11 +224,12 @@ input, button, .day-no, .trip-dates, .day-of-week{
   background: none;
   font-size: 10px;
   z-index: 1;
+  left: 5px; /* Adjust based on bullet position */
 }
 
-
 .timeline ul > li.day-content > ul > li > span {
-  display: block;
+  display: flex;
+  align-items: center;
   margin-left: 20px;
   font-weight: bold;
 }
@@ -216,12 +245,47 @@ input, button, .day-no, .trip-dates, .day-of-week{
 
 .timeline ul > li.day-content > ul > li > ul > li::before {
   font-family: 'FontAwesome';
-  content: '\f111';
-  position: absolute;
-  left: -10px;
-  top: 5.75px;
-  z-index: 1;
-  font-size: 1vh;
+  content: attr(data-timestamp) ' '; /* Replace missing timestamp with whitespace */
+  display: inline-block;
+  width: 7vh; /* Adjust width to align bullets */
+  text-align: left;
+  margin-left: 50vh;
+}
+
+.timeline ul > li.day-content > ul > li > ul > li > ul > li {
+  position: relative; /* Use relative positioning for alignment */
+  left: 0; /* Align to the left */
+  margin-left: 0; /* Remove margin */
+}
+
+.timeline ul > li.day-content > ul > li > ul > li > ul > li::before {
+  content: attr(data-timestamp) ' '; /* Align timestamps and replace missing ones with whitespace */
+  display: inline-block;
+  width: 7vh; /* Adjust width to align timestamps */
+  text-align: left;
+  margin-left: 50vh;
+}
+
+.timeline ul > li.day-content > ul > li > ul > li > ul > li {
+  position: absolute; /* Use absolute positioning for alignment */
+  left: 0; /* Align to the left */
+  margin-left: 0; /* Remove margin */
+}
+
+.timeline ul > li.day-content > ul > li > ul > li > ul > li::before {
+  content: attr(data-timestamp); /* Align timestamps */
+  display: inline-block;
+  width: 7vh; /* Adjust width to align timestamps */
+  text-align: left;
+  margin-left: 50vh;
+}
+
+.timeline ul > li.day-content > ul > li > ul > li.future-destination {
+  color: #0070F2;
+}
+
+.timeline ul > li.day-content > ul > li > ul > li.current-or-future-destination {
+  color: #0070F2;
 }
 
 .download-button {
@@ -344,4 +408,85 @@ input, button, .day-no, .trip-dates, .day-of-week{
 
 .download-menu button:hover {
   background: #f0f0f0;
+}
+
+.timestamp-input {
+  width: 100px;
+  margin-right: 10px;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 20px;
+  margin-left: 10px; /* Add margin for better spacing */
+}
+
+@media (max-width: 768px) {
+  .switch {
+    width: 28px;
+    height: 16px;
+  }
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+@media (max-width: 768px) {
+  .slider:before {
+    height: 12px;
+    width: 12px;
+    left: 2px;
+    bottom: 2px;
+  }
+}
+
+input:checked + .slider {
+  background-color: #0070F2;
+}
+
+input:checked + .slider:before {
+  transform: translateX(14px);
+}
+
+@media (max-width: 768px) {
+  input:checked + .slider:before {
+    transform: translateX(12px);
+  }
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
 }

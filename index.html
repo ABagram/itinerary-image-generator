@@ -18,6 +18,11 @@
         <input type="file" id="import-input" style="display: none;" onchange="importData(event)">
         <button onclick="exportData()">Export</button>
         <button onclick="clearData()">Clear</button>
+        <label class="switch">
+          <input type="checkbox" id="timestamp-toggle" onclick="toggleTimestamp()">
+          <span class="slider round"></span>
+        </label>
+        <span>Enable Timestamps</span>
       </div>
     </div>
 
