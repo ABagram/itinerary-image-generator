@@ -41,8 +41,11 @@ function saveData() {
       const transportation = locationRow.querySelector('.transportation-input') ? locationRow.querySelector('.transportation-input').value : null;
       const timestamp = locationRow.querySelector('.timestamp-input') ? locationRow.querySelector('.timestamp-input').value : null;
       const transportationType = locationRow.querySelector('.transportation-type-select') ? locationRow.querySelector('.transportation-type-select').value : null;
+      const accommodation = locationRow.querySelector('.accommodation-input') ? locationRow.querySelector('.accommodation-input').value : null;
+      const checkInTime = locationRow.querySelector('.check-in-time-input') ? locationRow.querySelector('.check-in-time-input').value : null;
+      const checkOutTime = locationRow.querySelector('.check-out-time-input') ? locationRow.querySelector('.check-out-time-input').value : null;
       const hasError = locationRow.querySelector('.error-text') ? true : false;
-      locations.push({ location, destination, meal, restaurant, transportation, timestamp, transportationType, hasError });
+      locations.push({ location, destination, meal, restaurant, transportation, timestamp, transportationType, accommodation, checkInTime, checkOutTime, hasError });
     });
 
     daysData.push({ dayNo, date, locations });
@@ -114,6 +117,7 @@ function addDay(dayData = null) {
     <button class="add-location" onclick="addLocation(this)">Add Destination</button>
     <button class="add-location" onclick="addMeal(this, null, true)">Add Meal</button>
     <button class="add-location" onclick="addTransportation(this, null, true)">Add Transportation</button>
+    <button class="add-location" onclick="addAccommodation(this, null, true)">Add Accommodation</button>
   `;
 
   document.getElementById('days-container').appendChild(dayDiv);
@@ -124,6 +128,8 @@ function addDay(dayData = null) {
         addTransportation(dayDiv.querySelector('.add-location'), locationData);
       } else if (locationData.meal) {
         addMeal(dayDiv.querySelector('.add-location'), locationData);
+      } else if (locationData.accommodation) {
+        addAccommodation(dayDiv.querySelector('.add-location'), locationData);
       } else {
         addLocation(dayDiv.querySelector('.add-location'), locationData);
       }
@@ -184,12 +190,13 @@ function addLocation(button, locationData = null) {
     <input type="text" placeholder="Destination" value="${locationData ? locationData.destination : ''}" oninput="updateTimeline()" class="destination-input" autocomplete="on">
     <span class="delete-location" onclick="deleteLocation(this)" data-hover="Delete">&times;</span>
     <span class="move-button" onclick="moveUp(this)" data-hover="Move Up"><i class='fas fa-angle-up'></i></span>
-    <span class="move-button" onclick="moveDown(this)" data-hover="Move Down"><i class="fas fa-angle-down"></i></span>
+    <span class="move-button" onclick="moveDown(this)" data-hover="Move Down"><i class='fas fa-angle-down'></i></span>
     <span class="plus-button" onclick="showMenu(this)" data-hover="Insert">+</span>
     <div class="menu">
       <button onclick="addLocationBetween(this)">Add Destination</button>
       <button onclick="addMeal(this)">Add Meal</button>
       <button onclick="addTransportation(this)">Add Transportation</button>
+      <button onclick="addAccommodation(this)">Add Accommodation</button>
     </div>
   `;
 
@@ -218,12 +225,13 @@ function addLocationBetween(button) {
     <input type="text" placeholder="Destination" class="destination-input" oninput="updateTimeline()">
     <span class="delete-location" onclick="deleteLocation(this)" data-hover="Delete">&times;</span>
     <span class="move-button" onclick="moveUp(this)" data-hover="Move Up"><i class='fas fa-angle-up'></i></span>
-    <span class="move-button" onclick="moveDown(this)" data-hover="Move Down"><i class="fas fa-angle-down"></i></span>
+    <span class="move-button" onclick="moveDown(this)" data-hover="Move Down"><i class='fas fa-angle-down'></i></span>
     <span class="plus-button" onclick="showMenu(this)" data-hover="Insert">+</span>
     <div class="menu">
       <button onclick="addLocationBetween(this)">Add Destination</button>
       <button onclick="addMeal(this)">Add Meal</button>
       <button onclick="addTransportation(this)">Add Transportation</button>
+      <button onclick="addAccommodation(this)">Add Accommodation</button>
     </div>
   `;
 
@@ -243,9 +251,9 @@ function addMeal(button, locationData = null, isDirectAdd = false) {
   locationRow.className = 'location-row';
 
   locationRow.innerHTML = `
-    <input type="text" placeholder="Location" class="location-input" oninput="updateTimeline()">
+    <input type="text" placeholder="Location" value="${locationData ? locationData.location : ''}" class="location-input" oninput="updateTimeline()">
     <input type="text" placeholder="Meal of the Day" value="${locationData ? locationData.meal : ''}" class="meal-input" list="meal-options">
-    <input type="text" placeholder="Restaurant/ Cafe" class="restaurant-input" oninput="updateTimeline()">
+    <input type="text" placeholder="Restaurant/ Cafe" value="${locationData ? locationData.restaurant : ''}" class="restaurant-input" oninput="updateTimeline()">
     <datalist id="meal-options">
       <option value="Breakfast">
       <option value="Lunch">
@@ -260,6 +268,7 @@ function addMeal(button, locationData = null, isDirectAdd = false) {
       <button onclick="addLocationBetween(this)">Add Destination</button>
       <button onclick="addMeal(this)">Add Meal</button>
       <button onclick="addTransportation(this)">Add Transportation</button>
+      <button onclick="addAccommodation(this)">Add Accommodation</button>
     </div>
   `;
 
@@ -286,8 +295,8 @@ function addTransportation(button, locationData = null, isDirectAdd = false) {
 
   locationRow.innerHTML = `
     <select class="transportation-type-select">
-      <option value="destination">In-between Destinations</option>
-      <option value="location">In-between Locations</option>
+      <option value="destination" ${locationData && locationData.transportationType === 'destination' ? 'selected' : ''}>In-between Destinations</option>
+      <option value="location" ${locationData && locationData.transportationType === 'location' ? 'selected' : ''}>In-between Locations</option>
     </select>
     <input type="text" placeholder="Transportation Type" value="${locationData ? locationData.transportation : ''}" class="transportation-input" list="transportation-options">
     <span class="delete-location" onclick="deleteLocation(this)" data-hover="Delete">&times;</span>
@@ -307,6 +316,45 @@ function addTransportation(button, locationData = null, isDirectAdd = false) {
       <button onclick="addLocationBetween(this)">Add Destination</button>
       <button onclick="addMeal(this)">Add Meal</button>
       <button onclick="addTransportation(this)">Add Transportation</button>
+      <button onclick="addAccommodation(this)">Add Accommodation</button>
+    </div>
+  `;
+
+  const timestampInput = document.createElement('input');
+  timestampInput.type = 'time';
+  timestampInput.className = 'timestamp-input';
+  timestampInput.style.display = enableTimestamp ? 'inline-block' : 'none';
+  timestampInput.value = locationData ? locationData.timestamp : '';
+  timestampInput.oninput = updateTimeline;
+  locationRow.insertBefore(timestampInput, locationRow.firstChild);
+
+  if (isDirectAdd) {
+    const locationContainer = button.closest('.day-container').querySelector('.location-container');
+    locationContainer.appendChild(locationRow);
+  } else {
+    button.closest('.location-row').insertAdjacentElement('afterend', locationRow);
+  }
+  updateTimeline();
+}
+
+function addAccommodation(button, locationData = null, isDirectAdd = false) {
+  const locationRow = document.createElement('div');
+  locationRow.className = 'location-row';
+
+  locationRow.innerHTML = `
+    <input type="text" placeholder="Location" value="${locationData ? locationData.location : ''}" class="location-input" oninput="updateTimeline()">
+    <input type="text" placeholder="Accommodation" value="${locationData ? locationData.accommodation : ''}" class="accommodation-input" oninput="updateTimeline()">
+    <input type="text" placeholder="Check-in Time" value="${locationData ? locationData.checkInTime : ''}" class="check-in-time-input" oninput="updateTimeline()">
+    <input type="text" placeholder="Check-out Time" value="${locationData ? locationData.checkOutTime : ''}" class="check-out-time-input" oninput="updateTimeline()">
+    <span class="delete-location" onclick="deleteLocation(this)" data-hover="Delete">&times;</span>
+    <span class="move-button" onclick="moveUp(this)" data-hover="Move Up"><i class='fas fa-angle-up'></i></span>
+    <span class="move-button" onclick="moveDown(this)" data-hover="Move Down"><i class='fas fa-angle-down'></i></span>
+    <span class="plus-button" onclick="showMenu(this)" data-hover="Insert">+</span>
+    <div class="menu">
+      <button onclick="addLocationBetween(this)">Add Destination</button>
+      <button onclick="addMeal(this)">Add Meal</button>
+      <button onclick="addTransportation(this)">Add Transportation</button>
+      <button onclick="addAccommodation(this)">Add Accommodation</button>
     </div>
   `;
 
@@ -450,6 +498,9 @@ function updateTimeline() {
       const transportation = locationRow.querySelector('.transportation-input') ? locationRow.querySelector('.transportation-input').value : null;
       const timestamp = locationRow.querySelector('.timestamp-input') ? locationRow.querySelector('.timestamp-input').value : null;
       const transportationType = locationRow.querySelector('.transportation-type-select') ? locationRow.querySelector('.transportation-type-select').value : null;
+      const accommodation = locationRow.querySelector('.accommodation-input') ? locationRow.querySelector('.accommodation-input').value : null;
+      const checkInTime = locationRow.querySelector('.check-in-time-input') ? locationRow.querySelector('.check-in-time-input').value : null;
+      const checkOutTime = locationRow.querySelector('.check-out-time-input') ? locationRow.querySelector('.check-out-time-input').value : null;
 
       if (location && location !== currentLocation) {
         currentLocation = location;
@@ -468,7 +519,7 @@ function updateTimeline() {
         const destinationContent = document.createElement('span');
         if (enableTimestamp) {
           const timestampSpan = document.createElement('span');
-          timestampSpan.style.width = '70px'; // Allot 70px for timestampSpan
+          timestampSpan.style.width = '40px'; // Allot 70px for timestampSpan
           timestampSpan.style.display = 'inline-block'; // Ensure it takes up space
           timestampSpan.style.fontSize = '75%'; // Set font size to 75% of list item font size
           timestampSpan.style.verticalAlign = 'middle'; // Vertically center the timestamp
@@ -522,6 +573,32 @@ function updateTimeline() {
         } else {
           dayContentList.appendChild(transportationItem);
         }
+      }
+
+      if (accommodation) {
+        const accommodationItem = document.createElement('li');
+        const accommodationContent = document.createElement('span');
+        if (enableTimestamp) {
+          const timestampSpan = document.createElement('span');
+          timestampSpan.style.width = '70px'; // Allot 70px for timestampSpan
+          timestampSpan.style.display = 'inline-block'; // Ensure it takes up space
+          timestampSpan.style.fontSize = '75%'; // Set font size to 75% of list item font size
+          timestampSpan.style.verticalAlign = 'middle'; // Vertically center the timestamp
+          if (timestamp) {
+            timestampSpan.textContent = timestamp;
+          }
+          accommodationContent.appendChild(timestampSpan);
+        }
+        let accommodationText = `Accommodation: ${accommodation}`;
+        if (checkInTime) {
+          accommodationText += `, Check-in: ${checkInTime}`;
+        }
+        if (checkOutTime) {
+          accommodationText += `, Check-out: ${checkOutTime}`;
+        }
+        accommodationContent.appendChild(document.createTextNode(accommodationText));
+        accommodationItem.appendChild(accommodationContent);
+        currentNestedList.appendChild(accommodationItem);
       }
     });
 

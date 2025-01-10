@@ -13,17 +13,20 @@
   <div class="planner-container">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <h1>Itinerary Constructor</h1>
-      <div class="control-buttons">
+      <div class="control-buttons" style="display: flex; align-items: center;">
         <button onclick="document.getElementById('import-input').click()">Import</button>
         <input type="file" id="import-input" style="display: none;" onchange="importData(event)">
         <button onclick="exportData()">Export</button>
         <button onclick="clearData()">Clear</button>
-        <label class="switch">
-          <input type="checkbox" id="timestamp-toggle" onclick="toggleTimestamp()">
-          <span class="slider round"></span>
-        </label>
-        <span>Enable Timestamps</span>
       </div>
+    </div>
+    <div class="configurations">
+      <span>Configurations:</span>
+      <label class="switch">
+        <input type="checkbox" id="timestamp-toggle" onclick="toggleTimestamp()">
+        <span class="slider round"></span>
+      </label>
+      <span>Enable Timestamps</span>
     </div>
 
     <div id="days-container"></div>

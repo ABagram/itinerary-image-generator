@@ -16,6 +16,14 @@ h2{
     margin-left: 20px;
 }
 
+.configurations{
+  border: 1px solid #f5f6f7;
+  padding: 20px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  position: relative;
+}
+
 input{
   background-color: #f5f6f7;
 }
