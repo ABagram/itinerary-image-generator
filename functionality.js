@@ -1,6 +1,12 @@
 let dayCounter = 0;
 let userId;
 let enableTimestamp = JSON.parse(localStorage.getItem('enableTimestamp')) || false;
+let enableBudget = JSON.parse(localStorage.getItem('enableBudget')) || false;
+let selectedCurrency = localStorage.getItem('selectedCurrency') || 'USD';
+
+const currencySymbols = {
+  USD: '$', EUR: '€', GBP: '£', JPY: '¥', AUD: '$', CAD: '$', CHF: 'CHF', CNY: '¥', SEK: 'kr', NZD: '$', MXN: '$', SGD: '$', HKD: '$', NOK: 'kr', KRW: '₩', TRY: '₺', RUB: '₽', INR: '₹', BRL: 'R$', ZAR: 'R', PHP: '₱', PLN: 'zł', THB: '฿', IDR: 'Rp', HUF: 'Ft', CZK: 'Kč', ILS: '₪', MYR: 'RM', SAR: 'ر.س', AED: 'د.إ', COP: '$', CLP: '$', PEN: 'S/.', VND: '₫', EGP: '£', NGN: '₦', PKR: '₨', BDT: '৳', LKR: 'Rs', KWD: 'د.ك', QAR: 'ر.ق', OMR: 'ر.ع.', BHD: 'ب.د', JOD: 'د.ا', IQD: 'ع.د', LBP: 'ل.ل', SYP: 'ل.س', YER: '﷼', AFN: '؋', IRR: '﷼', KZT: '₸', UZS: 'сўм', TMT: 'm', AZN: '₼', GEL: '₾', AMD: '֏', BYN: 'Br', MDL: 'L', UAH: '₴', BAM: 'KM', MKD: 'ден', ALL: 'L', RSD: 'дин', HRK: 'kn', BGN: 'лв', RON: 'lei', ISK: 'kr', DKK: 'kr', HNL: 'L', GTQ: 'Q', CRC: '₡', PAB: 'B/.', BZD: '$', HTG: 'G', JMD: '$', TTD: '$', BBD: '$', XCD: '$', KYD: '$', BSD: '$', BMD: '$', FJD: '$', PGK: 'K', SBD: '$', TOP: 'T$', WST: 'WS$', VUV: 'VT', KPW: '₩', MNT: '₮', MMK: 'K', LAK: '₭', KHR: '៛', BND: '$', MOP: 'MOP$', TWD: 'NT$', MVR: 'Rf', SCR: '₨', MUR: '₨', NPR: '₨'
+};
 
 function generateUserId() {
   return 'user-' + Math.random().toString(36).substr(2, 9);
@@ -24,6 +30,35 @@ function toggleTimestamp() {
   updateTimeline();
 }
 
+function toggleBudget() {
+  enableBudget = !enableBudget;
+  localStorage.setItem('enableBudget', enableBudget);
+  document.querySelectorAll('.budget-input').forEach(input => {
+    input.style.display = enableBudget ? 'inline-block' : 'none';
+  });
+  updateTimeline();
+}
+
+function formatBudget(value) {
+  if (!value) return '';
+  const number = parseFloat(value.replace(/,/g, ''));
+  if (isNaN(number)) return '';
+  return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function updateCurrency() {
+  selectedCurrency = document.getElementById('currency-select').value;
+  localStorage.setItem('selectedCurrency', selectedCurrency);
+  const currencySymbol = currencySymbols[selectedCurrency] || selectedCurrency;
+  document.querySelectorAll('.budget-input').forEach(input => {
+    input.placeholder = `${currencySymbol} 0.00`;
+    if (input.value) {
+      input.value = formatBudget(input.value);
+    }
+  });
+  updateTimeline();
+}
+
 function saveData() {
   const daysData = [];
   const days = document.querySelectorAll('.day-container');
@@ -41,11 +76,13 @@ function saveData() {
       const transportation = locationRow.querySelector('.transportation-input') ? locationRow.querySelector('.transportation-input').value : null;
       const timestamp = locationRow.querySelector('.timestamp-input') ? locationRow.querySelector('.timestamp-input').value : null;
       const transportationType = locationRow.querySelector('.transportation-type-select') ? locationRow.querySelector('.transportation-type-select').value : null;
+      const station = locationRow.querySelector('.station-input') ? locationRow.querySelector('.station-input').value : null;
       const accommodation = locationRow.querySelector('.accommodation-input') ? locationRow.querySelector('.accommodation-input').value : null;
       const checkInTime = locationRow.querySelector('.check-in-time-input') ? locationRow.querySelector('.check-in-time-input').value : null;
       const checkOutTime = locationRow.querySelector('.check-out-time-input') ? locationRow.querySelector('.check-out-time-input').value : null;
       const hasError = locationRow.querySelector('.error-text') ? true : false;
-      locations.push({ location, destination, meal, restaurant, transportation, timestamp, transportationType, accommodation, checkInTime, checkOutTime, hasError });
+      const budget = locationRow.querySelector('.budget-input') ? locationRow.querySelector('.budget-input').value : null;
+      locations.push({ location, destination, meal, restaurant, transportation, timestamp, transportationType, station, accommodation, checkInTime, checkOutTime, hasError, budget });
     });
 
     daysData.push({ dayNo, date, locations });
@@ -68,6 +105,13 @@ function loadData() {
   const enableTimestamp = JSON.parse(localStorage.getItem('enableTimestamp'));
   document.querySelectorAll('.timestamp-input').forEach(input => {
     input.style.display = enableTimestamp ? 'inline-block' : 'none';
+  });
+
+  document.getElementById('currency-select').value = selectedCurrency;
+  document.querySelectorAll('.budget-input').forEach(input => {
+    input.style.display = enableBudget ? 'inline-block' : 'none';
+    const currencySymbol = currencySymbols[selectedCurrency] || selectedCurrency;
+    input.placeholder = `${currencySymbol} 0.00`;
   });
 }
 
@@ -185,9 +229,12 @@ function addLocation(button, locationData = null) {
   const locationRow = document.createElement('div');
   locationRow.className = 'location-row';
 
+  const currencySymbol = currencySymbols[selectedCurrency] || selectedCurrency;
+
   locationRow.innerHTML = `
     <input type="text" placeholder="Location" value="${locationData ? locationData.location : ''}" oninput="updateTimeline()" class="location-input" autocomplete="on">
     <input type="text" placeholder="Destination" value="${locationData ? locationData.destination : ''}" oninput="updateTimeline()" class="destination-input" autocomplete="on">
+    <input type="number" placeholder="${currencySymbol} 0.00" value="${locationData ? formatBudget(locationData.budget) : ''}" class="budget-input" style="display: ${enableBudget ? 'inline-block' : 'none'}" oninput="updateTimeline()">
     <span class="delete-location" onclick="deleteLocation(this)" data-hover="Delete">&times;</span>
     <span class="move-button" onclick="moveUp(this)" data-hover="Move Up"><i class='fas fa-angle-up'></i></span>
     <span class="move-button" onclick="moveDown(this)" data-hover="Move Down"><i class='fas fa-angle-down'></i></span>
@@ -220,9 +267,12 @@ function addLocationBetween(button) {
   const locationRow = document.createElement('div');
   locationRow.className = 'location-row';
 
+  const currencySymbol = currencySymbols[selectedCurrency] || selectedCurrency;
+
   locationRow.innerHTML = `
     <input type="text" placeholder="Location" class="location-input" oninput="updateTimeline()">
     <input type="text" placeholder="Destination" class="destination-input" oninput="updateTimeline()">
+    <input type="number" placeholder="${currencySymbol} 0.00" class="budget-input" style="display: ${enableBudget ? 'inline-block' : 'none'}" oninput="updateTimeline()">
     <span class="delete-location" onclick="deleteLocation(this)" data-hover="Delete">&times;</span>
     <span class="move-button" onclick="moveUp(this)" data-hover="Move Up"><i class='fas fa-angle-up'></i></span>
     <span class="move-button" onclick="moveDown(this)" data-hover="Move Down"><i class='fas fa-angle-down'></i></span>
@@ -250,10 +300,13 @@ function addMeal(button, locationData = null, isDirectAdd = false) {
   const locationRow = document.createElement('div');
   locationRow.className = 'location-row';
 
+  const currencySymbol = currencySymbols[selectedCurrency] || selectedCurrency;
+
   locationRow.innerHTML = `
     <input type="text" placeholder="Location" value="${locationData ? locationData.location : ''}" class="location-input" oninput="updateTimeline()">
     <input type="text" placeholder="Meal of the Day" value="${locationData ? locationData.meal : ''}" class="meal-input" list="meal-options">
     <input type="text" placeholder="Restaurant/ Cafe" value="${locationData ? locationData.restaurant : ''}" class="restaurant-input" oninput="updateTimeline()">
+    <input type="number" placeholder="${currencySymbol} 0.00" value="${locationData ? formatBudget(locationData.budget) : ''}" class="budget-input" style="display: ${enableBudget ? 'inline-block' : 'none'}" oninput="updateTimeline()">
     <datalist id="meal-options">
       <option value="Breakfast">
       <option value="Lunch">
@@ -293,12 +346,16 @@ function addTransportation(button, locationData = null, isDirectAdd = false) {
   const locationRow = document.createElement('div');
   locationRow.className = 'location-row';
 
+  const currencySymbol = currencySymbols[selectedCurrency] || selectedCurrency;
+
   locationRow.innerHTML = `
     <select class="transportation-type-select">
       <option value="destination" ${locationData && locationData.transportationType === 'destination' ? 'selected' : ''}>In-between Destinations</option>
       <option value="location" ${locationData && locationData.transportationType === 'location' ? 'selected' : ''}>In-between Locations</option>
     </select>
     <input type="text" placeholder="Transportation Type" value="${locationData ? locationData.transportation : ''}" class="transportation-input" list="transportation-options">
+    <input type="text" placeholder="Station/ Stop" value="${locationData ? locationData.station : ''}" class="station-input">
+    <input type="number" placeholder="${currencySymbol} 0.00" value="${locationData ? formatBudget(locationData.budget) : ''}" class="budget-input" style="display: ${enableBudget ? 'inline-block' : 'none'}" oninput="updateTimeline()">
     <span class="delete-location" onclick="deleteLocation(this)" data-hover="Delete">&times;</span>
     <datalist id="transportation-options">
       <option value="Bicycle">
@@ -341,11 +398,14 @@ function addAccommodation(button, locationData = null, isDirectAdd = false) {
   const locationRow = document.createElement('div');
   locationRow.className = 'location-row';
 
+  const currencySymbol = currencySymbols[selectedCurrency] || selectedCurrency;
+
   locationRow.innerHTML = `
     <input type="text" placeholder="Location" value="${locationData ? locationData.location : ''}" class="location-input" oninput="updateTimeline()">
     <input type="text" placeholder="Accommodation" value="${locationData ? locationData.accommodation : ''}" class="accommodation-input" oninput="updateTimeline()">
     <input type="text" placeholder="Check-in Time" value="${locationData ? locationData.checkInTime : ''}" class="check-in-time-input" oninput="updateTimeline()">
     <input type="text" placeholder="Check-out Time" value="${locationData ? locationData.checkOutTime : ''}" class="check-out-time-input" oninput="updateTimeline()">
+    <input type="number" placeholder="${currencySymbol} 0.00" value="${locationData ? formatBudget(locationData.budget) : ''}" class="budget-input" style="display: ${enableBudget ? 'inline-block' : 'none'}" oninput="updateTimeline()">
     <span class="delete-location" onclick="deleteLocation(this)" data-hover="Delete">&times;</span>
     <span class="move-button" onclick="moveUp(this)" data-hover="Move Up"><i class='fas fa-angle-up'></i></span>
     <span class="move-button" onclick="moveDown(this)" data-hover="Move Down"><i class='fas fa-angle-down'></i></span>
@@ -498,9 +558,11 @@ function updateTimeline() {
       const transportation = locationRow.querySelector('.transportation-input') ? locationRow.querySelector('.transportation-input').value : null;
       const timestamp = locationRow.querySelector('.timestamp-input') ? locationRow.querySelector('.timestamp-input').value : null;
       const transportationType = locationRow.querySelector('.transportation-type-select') ? locationRow.querySelector('.transportation-type-select').value : null;
+      const station = locationRow.querySelector('.station-input') ? locationRow.querySelector('.station-input').value : null;
       const accommodation = locationRow.querySelector('.accommodation-input') ? locationRow.querySelector('.accommodation-input').value : null;
       const checkInTime = locationRow.querySelector('.check-in-time-input') ? locationRow.querySelector('.check-in-time-input').value : null;
       const checkOutTime = locationRow.querySelector('.check-out-time-input') ? locationRow.querySelector('.check-out-time-input').value : null;
+      const budget = locationRow.querySelector('.budget-input') ? locationRow.querySelector('.budget-input').value : null;
 
       if (location && location !== currentLocation) {
         currentLocation = location;
@@ -530,6 +592,17 @@ function updateTimeline() {
         }
         destinationContent.appendChild(document.createTextNode(destination));
         destinationItem.appendChild(destinationContent);
+        if (budget) {
+          const budgetSpan = document.createElement('span');
+          budgetSpan.className = 'budget-span'; // Add class to budget span
+          budgetSpan.style.width = '70px'; // Allot 70px for budgetSpan
+          budgetSpan.style.display = 'inline-block'; // Ensure it takes up space
+          budgetSpan.style.fontSize = '75%'; // Set font size to 75% of list item font size
+          budgetSpan.style.verticalAlign = 'middle'; // Vertically center the budget
+          const currencySymbol = currencySymbols[selectedCurrency] || selectedCurrency;
+          budgetSpan.textContent = `${currencySymbol}${formatBudget(budget)}`;
+          destinationContent.appendChild(budgetSpan);
+        }
         currentNestedList.appendChild(destinationItem);
       }
 
@@ -549,6 +622,17 @@ function updateTimeline() {
         }
         mealContent.appendChild(document.createTextNode(`${meal}: ${restaurant}`));
         mealItem.appendChild(mealContent);
+        if (budget) {
+          const budgetSpan = document.createElement('span');
+          budgetSpan.className = 'budget-span'; // Add class to budget span
+          budgetSpan.style.width = '70px'; // Allot 70px for budgetSpan
+          budgetSpan.style.display = 'inline-block'; // Ensure it takes up space
+          budgetSpan.style.fontSize = '75%'; // Set font size to 75% of list item font size
+          budgetSpan.style.verticalAlign = 'middle'; // Vertically center the budget
+          const currencySymbol = currencySymbols[selectedCurrency] || selectedCurrency;
+          budgetSpan.textContent = `${currencySymbol}${formatBudget(budget)}`;
+          mealContent.appendChild(budgetSpan);
+        }
         currentNestedList.appendChild(mealItem);
       }
 
@@ -567,7 +651,21 @@ function updateTimeline() {
           transportationContent.appendChild(timestampSpan);
         }
         transportationContent.appendChild(document.createTextNode(`Transportation: ${transportation}`));
+        if (station) {
+          transportationContent.appendChild(document.createTextNode(`, Station/ Stop: ${station}`));
+        }
         transportationItem.appendChild(transportationContent);
+        if (budget) {
+          const budgetSpan = document.createElement('span');
+          budgetSpan.className = 'budget-span'; // Add class to budget span
+          budgetSpan.style.width = '70px'; // Allot 70px for budgetSpan
+          budgetSpan.style.display = 'inline-block'; // Ensure it takes up space
+          budgetSpan.style.fontSize = '75%'; // Set font size to 75% of list item font size
+          budgetSpan.style.verticalAlign = 'middle'; // Vertically center the budget
+          const currencySymbol = currencySymbols[selectedCurrency] || selectedCurrency;
+          budgetSpan.textContent = `${currencySymbol}${formatBudget(budget)}`;
+          transportationContent.appendChild(budgetSpan);
+        }
         if (transportationType === 'destination') {
           currentNestedList.appendChild(transportationItem);
         } else {
@@ -598,6 +696,17 @@ function updateTimeline() {
         }
         accommodationContent.appendChild(document.createTextNode(accommodationText));
         accommodationItem.appendChild(accommodationContent);
+        if (budget) {
+          const budgetSpan = document.createElement('span');
+          budgetSpan.className = 'budget-span'; // Add class to budget span
+          budgetSpan.style.width = '70px'; // Allot 70px for budgetSpan
+          budgetSpan.style.display = 'inline-block'; // Ensure it takes up space
+          budgetSpan.style.fontSize = '75%'; // Set font size to 75% of list item font size
+          budgetSpan.style.verticalAlign = 'middle'; // Vertically center the budget
+          const currencySymbol = currencySymbols[selectedCurrency] || selectedCurrency;
+          budgetSpan.textContent = `${currencySymbol}${formatBudget(budget)}`;
+          accommodationContent.appendChild(budgetSpan);
+        }
         currentNestedList.appendChild(accommodationItem);
       }
     });
@@ -774,4 +883,24 @@ window.onload = () => {
     input.style.display = enableTimestamp ? 'inline-block' : 'none';
   });
   document.getElementById('timestamp-toggle').checked = enableTimestamp;
+  document.getElementById('budget-toggle').checked = enableBudget;
+  document.getElementById('currency-select').value = selectedCurrency;
 };
+
+function filterCurrencyOptions() {
+  const input = document.querySelector('.select2-search__field');
+  const filter = input.value.toUpperCase();
+  const options = document.querySelectorAll('#currency-select option');
+
+  options.forEach(option => {
+    const txtValue = option.textContent || option.innerText;
+    const currencyCode = option.value.toUpperCase();
+    if (txtValue.toUpperCase().indexOf(filter) > -1 || currencyCode.indexOf(filter) > -1) {
+      option.style.display = '';
+    } else {
+      option.style.display = 'none';
+    }
+  });
+}
+
+// ...existing code...

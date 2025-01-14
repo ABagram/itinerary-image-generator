@@ -8,6 +8,8 @@
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="destination.png" type="image/x-icon">
   <script src="https://kit.fontawesome.com/9ef70a0feb.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 </head>
 <body>
   <div class="planner-container">
@@ -27,6 +29,14 @@
         <span class="slider round"></span>
       </label>
       <span>Enable Timestamps</span>
+      <label class="switch">
+        <input type="checkbox" id="budget-toggle" onclick="toggleBudget()">
+        <span class="slider round"></span>
+      </label>
+      <span>Enable Budget</span>
+      <select id="currency-select" class="currency-select" onchange="updateCurrency()" oninput="filterCurrencyOptions()">
+        <!-- Currency options will be loaded here by JavaScript -->
+      </select>
     </div>
 
     <div id="days-container"></div>
@@ -57,5 +67,27 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
   <script src="functionality.js"></script>
+  <script src="currency-options.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      $('#currency-select').select2({
+        placeholder: 'Select a currency',
+        allowClear: true,
+        templateSelection: function (data) {
+          if (!data.id) {
+            return data.text;
+          }
+          const flag = data.text.split(' ')[0];
+          const acronym = data.text.split(' ')[1];
+          return $('<span>' + flag + ' ' + acronym + '</span>');
+        },
+        templateResult: function (data) {
+          return data.text;
+        }
+      }).on('select2:open', function() {
+        $('.select2-search__field').on('input', filterCurrencyOptions);
+      });
+    });
+  </script>
 </body>
 </html>

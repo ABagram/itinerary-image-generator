@@ -28,7 +28,7 @@ input{
   background-color: #f5f6f7;
 }
 
-input, button, .day-no, .trip-dates, .day-of-week, .transportation-type-select, .transportation-input{
+input, button, .day-no, .trip-dates, .day-of-week, .transportation-type-select, .transportation-input, .currency-select{
   font-family: 'DM Sans', sans-serif;
   border: none;
   padding: 5px 10px;
@@ -496,4 +496,25 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+.currency-select {
+  margin-left: 10px;
+  padding: 5px;
+  border-radius: 5px;
+  border: none;
+  background-color: #f5f6f7;
+}
+
+.budget-input {
+  margin-left: 10px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: #f5f6f7;
+  width: 80px;
+}
+
+.budget-span{
+  margin-left: 10px;
 }
