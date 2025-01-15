@@ -21,24 +21,6 @@ function getUserId() {
   return id;
 }
 
-function toggleTimestamp() {
-  enableTimestamp = !enableTimestamp;
-  localStorage.setItem('enableTimestamp', enableTimestamp);
-  document.querySelectorAll('.timestamp-input').forEach(input => {
-    input.style.display = enableTimestamp ? 'inline-block' : 'none';
-  });
-  updateTimeline();
-}
-
-function toggleBudget() {
-  enableBudget = !enableBudget;
-  localStorage.setItem('enableBudget', enableBudget);
-  document.querySelectorAll('.budget-input').forEach(input => {
-    input.style.display = enableBudget ? 'inline-block' : 'none';
-  });
-  updateTimeline();
-}
-
 function formatBudget(value) {
   if (!value) return '';
   const number = parseFloat(value.replace(/,/g, ''));
@@ -46,19 +28,25 @@ function formatBudget(value) {
   return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-function updateCurrency() {
-  selectedCurrency = document.getElementById('currency-select').value;
-  localStorage.setItem('selectedCurrency', selectedCurrency);
-  const currencySymbol = currencySymbols[selectedCurrency] || selectedCurrency;
-  document.querySelectorAll('.budget-input').forEach(input => {
-    input.placeholder = `${currencySymbol} 0.00`;
-    if (input.value) {
-      input.value = formatBudget(input.value);
-    }
-  });
-  updateTimeline();
+function saveSessionData() {
+  const sessionData = {
+    enableTimestamp,
+    enableBudget,
+    selectedCurrency
+  };
+  localStorage.setItem(`sessionData-${userId}`, JSON.stringify(sessionData));
 }
 
+function loadSessionData() {
+  const sessionData = JSON.parse(localStorage.getItem(`sessionData-${userId}`));
+  if (sessionData) {
+    enableTimestamp = sessionData.enableTimestamp;
+    enableBudget = sessionData.enableBudget;
+    selectedCurrency = sessionData.selectedCurrency;
+  }
+}
+
+// Modify saveData function
 function saveData() {
   const daysData = [];
   const days = document.querySelectorAll('.day-container');
@@ -69,19 +57,19 @@ function saveData() {
     const locations = [];
 
     day.querySelectorAll('.location-row').forEach(locationRow => {
-      const location = locationRow.querySelector('.location-input') ? locationRow.querySelector('.location-input').value : null;
-      const destination = locationRow.querySelector('.destination-input') ? locationRow.querySelector('.destination-input').value : null;
-      const meal = locationRow.querySelector('.meal-input') ? locationRow.querySelector('.meal-input').value : null;
-      const restaurant = locationRow.querySelector('.restaurant-input') ? locationRow.querySelector('.restaurant-input').value : null;
-      const transportation = locationRow.querySelector('.transportation-input') ? locationRow.querySelector('.transportation-input').value : null;
-      const timestamp = locationRow.querySelector('.timestamp-input') ? locationRow.querySelector('.timestamp-input').value : null;
-      const transportationType = locationRow.querySelector('.transportation-type-select') ? locationRow.querySelector('.transportation-type-select').value : null;
-      const station = locationRow.querySelector('.station-input') ? locationRow.querySelector('.station-input').value : null;
-      const accommodation = locationRow.querySelector('.accommodation-input') ? locationRow.querySelector('.accommodation-input').value : null;
-      const checkInTime = locationRow.querySelector('.check-in-time-input') ? locationRow.querySelector('.check-in-time-input').value : null;
-      const checkOutTime = locationRow.querySelector('.check-out-time-input') ? locationRow.querySelector('.check-out-time-input').value : null;
+      const location = locationRow.querySelector('.location-input')?.value || '';
+      const destination = locationRow.querySelector('.destination-input')?.value || '';
+      const meal = locationRow.querySelector('.meal-input')?.value || '';
+      const restaurant = locationRow.querySelector('.restaurant-input')?.value || '';
+      const transportation = locationRow.querySelector('.transportation-input')?.value || '';
+      const timestamp = locationRow.querySelector('.timestamp-input')?.value || '';
+      const transportationType = locationRow.querySelector('.transportation-type-select')?.value || '';
+      const station = locationRow.querySelector('.station-input')?.value || '';
+      const accommodation = locationRow.querySelector('.accommodation-input')?.value || '';
+      const checkInTime = locationRow.querySelector('.check-in-time-input')?.value || '';
+      const checkOutTime = locationRow.querySelector('.check-out-time-input')?.value || '';
       const hasError = locationRow.querySelector('.error-text') ? true : false;
-      const budget = locationRow.querySelector('.budget-input') ? locationRow.querySelector('.budget-input').value : null;
+      const budget = locationRow.querySelector('.budget-input')?.value || '';
       locations.push({ location, destination, meal, restaurant, transportation, timestamp, transportationType, station, accommodation, checkInTime, checkOutTime, hasError, budget });
     });
 
@@ -89,8 +77,10 @@ function saveData() {
   });
 
   localStorage.setItem(`daysData-${userId}`, JSON.stringify(daysData));
+  saveSessionData(); // Save session data
 }
 
+// Modify loadData function
 function loadData() {
   const daysData = JSON.parse(localStorage.getItem(`daysData-${userId}`));
 
@@ -101,6 +91,8 @@ function loadData() {
   } else {
     addDay();
   }
+
+  loadSessionData(); // Load session data
 
   const enableTimestamp = JSON.parse(localStorage.getItem('enableTimestamp'));
   document.querySelectorAll('.timestamp-input').forEach(input => {
@@ -292,7 +284,12 @@ function addLocationBetween(button) {
   timestampInput.oninput = updateTimeline;
   locationRow.insertBefore(timestampInput, locationRow.firstChild);
 
-  button.closest('.location-row').insertAdjacentElement('afterend', locationRow);
+  const closestLocationRow = button.closest('.location-row');
+  if (closestLocationRow) {
+    closestLocationRow.insertAdjacentElement('afterend', locationRow);
+  } else {
+    button.closest('.day-container').querySelector('.location-container').appendChild(locationRow);
+  }
   updateTimeline();
 }
 
@@ -337,7 +334,12 @@ function addMeal(button, locationData = null, isDirectAdd = false) {
     const locationContainer = button.closest('.day-container').querySelector('.location-container');
     locationContainer.appendChild(locationRow);
   } else {
-    button.closest('.location-row').insertAdjacentElement('afterend', locationRow);
+    const closestLocationRow = button.closest('.location-row');
+    if (closestLocationRow) {
+      closestLocationRow.insertAdjacentElement('afterend', locationRow);
+    } else {
+      button.closest('.day-container').querySelector('.location-container').appendChild(locationRow);
+    }
   }
   updateTimeline();
 }
@@ -389,7 +391,12 @@ function addTransportation(button, locationData = null, isDirectAdd = false) {
     const locationContainer = button.closest('.day-container').querySelector('.location-container');
     locationContainer.appendChild(locationRow);
   } else {
-    button.closest('.location-row').insertAdjacentElement('afterend', locationRow);
+    const closestLocationRow = button.closest('.location-row');
+    if (closestLocationRow) {
+      closestLocationRow.insertAdjacentElement('afterend', locationRow);
+    } else {
+      button.closest('.day-container').querySelector('.location-container').appendChild(locationRow);
+    }
   }
   updateTimeline();
 }
@@ -430,7 +437,12 @@ function addAccommodation(button, locationData = null, isDirectAdd = false) {
     const locationContainer = button.closest('.day-container').querySelector('.location-container');
     locationContainer.appendChild(locationRow);
   } else {
-    button.closest('.location-row').insertAdjacentElement('afterend', locationRow);
+    const closestLocationRow = button.closest('.location-row');
+    if (closestLocationRow) {
+      closestLocationRow.insertAdjacentElement('afterend', locationRow);
+    } else {
+      button.closest('.day-container').querySelector('.location-container').appendChild(locationRow);
+    }
   }
   updateTimeline();
 }
@@ -517,6 +529,20 @@ function updateTimeline() {
 
   const today = new Date().setHours(0, 0, 0, 0);
 
+  let maxDestinationLength = 0;
+
+  days.forEach(day => {
+    const locations = day.querySelectorAll('.location-row');
+    locations.forEach(locationRow => {
+      const destination = locationRow.querySelector('.destination-input') ? locationRow.querySelector('.destination-input').value : '';
+      if (destination.length > maxDestinationLength) {
+        maxDestinationLength = destination.length;
+      }
+    });
+  });
+
+  const destinationWidth = maxDestinationLength * 8 + 30; // Approximate width per character plus additional 30px
+
   days.forEach(day => {
     const dayNo = day.dataset.dayNo;
     const { date, day: dayOfWeek } = formatDateWithDay(day.querySelector('.date-input').value);
@@ -590,7 +616,11 @@ function updateTimeline() {
           }
           destinationContent.appendChild(timestampSpan);
         }
-        destinationContent.appendChild(document.createTextNode(destination));
+        const destinationSpan = document.createElement('span');
+        destinationSpan.textContent = destination;
+        destinationSpan.style.width = `${destinationWidth}px`;
+        destinationSpan.style.display = 'inline-block';
+        destinationContent.appendChild(destinationSpan);
         destinationItem.appendChild(destinationContent);
         if (budget) {
           const budgetSpan = document.createElement('span');
@@ -639,6 +669,7 @@ function updateTimeline() {
       if (transportation) {
         const transportationItem = document.createElement('li');
         const transportationContent = document.createElement('span');
+        transportationContent.className = transportationType === 'destination' ? 'transportation-destination' : 'transportation-location';
         if (enableTimestamp) {
           const timestampSpan = document.createElement('span');
           timestampSpan.style.width = '70px'; // Allot 70px for timestampSpan
@@ -885,6 +916,7 @@ window.onload = () => {
   document.getElementById('timestamp-toggle').checked = enableTimestamp;
   document.getElementById('budget-toggle').checked = enableBudget;
   document.getElementById('currency-select').value = selectedCurrency;
+  loadSessionData(); // Load session data
 };
 
 function filterCurrencyOptions() {

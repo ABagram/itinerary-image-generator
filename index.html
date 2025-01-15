@@ -14,6 +14,7 @@
 <body>
   <div class="planner-container">
     <div style="display: flex; justify-content: space-between; align-items: center;">
+      <img src="destination.png" alt="Destination Icon" class="destination-icon">
       <h1>Itinerary Constructor</h1>
       <div class="control-buttons" style="display: flex; align-items: center;">
         <button onclick="document.getElementById('import-input').click()">Import</button>
@@ -67,6 +68,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
   <script src="functionality.js"></script>
+  <script src="toggle.js"></script>
   <script src="currency-options.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -87,6 +89,9 @@
       }).on('select2:open', function() {
         $('.select2-search__field').on('input', filterCurrencyOptions);
       });
+
+      // Ensure data is loaded on page load
+      loadData();
     });
   </script>
 </body>
