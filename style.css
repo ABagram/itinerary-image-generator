@@ -73,11 +73,12 @@ input, button, .day-no, .trip-dates, .day-of-week, .transportation-type-select, 
 }
 
 .day-container {
-  border: 1px solid #f5f6f7;
-  padding: 20px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  position: relative;
+    border: 1px solid #eef0f2;
+    padding: 0; /* Let the header and body have their own padding */
+    margin-bottom: 20px;
+    border-radius: 8px;
+    background-color: white;
+    overflow: hidden; /* Keeps corners rounded */
 }
 
 .day-container.active {
@@ -91,9 +92,12 @@ input, button, .day-no, .trip-dates, .day-of-week, .transportation-type-select, 
 }
 
 .day-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    background-color: #0070F2;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .day-header span,
@@ -133,6 +137,10 @@ input, button, .day-no, .trip-dates, .day-of-week, .transportation-type-select, 
   }
 }
 
+.location-container {
+    padding: 15px; /* Adds space inside the day body */
+}
+
 .location-row {
   display: flex;
   align-items: center;
@@ -167,33 +175,24 @@ input, button, .day-no, .trip-dates, .day-of-week, .transportation-type-select, 
 
 .canvas-container {
   flex: 1;
+  min-width: 400px; /* Prevents it from getting too narrow on desktop */
   border: 1px solid #f5f6f7;
-  padding: 10px;
+  padding: 20px;
   border-radius: 5px;
-  overflow-y: auto;
-  height: auto; /* Adjust height to auto */
-  background-color: #f7f7f7; /* Set background color to gray */
+  overflow-x: auto; /* Allows horizontal scroll if content is long */
+  background-color: #f7f7f7;
+}
+
+.timeline {
+    width: 100%;
+    max-width: 800px; /* Standard readable line length */
+    margin: 0 auto;
 }
 
 .timeline ul {
   list-style: none;
   padding: 0;
   position: relative;
-}
-
-.timeline ul ul::before {
-  content: '';
-  position: absolute;
-  top: calc(1.2vh / 2); /* Start from half the height of the first child */
-  bottom: calc(1.2vh); /* End at half the height of the last child */
-  left: 5px; /* Adjust based on bullet position */
-  width: 2px;
-  background: currentColor; /* Inherit color from the bullets */
-  z-index: 0;
-}
-
-.timeline ul ul ul::before {
-  content: none; /* Remove the vertical line for nested list in the nested list of the nested list */
 }
 
 .timeline ul > li {
@@ -204,7 +203,8 @@ input, button, .day-no, .trip-dates, .day-of-week, .transportation-type-select, 
 .timeline ul > li.day-separator {
   background: none; /* No background for day separator */
   padding: 0;
-  margin-bottom: 10px;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 .timeline ul > li.day-separator > span {
@@ -212,10 +212,11 @@ input, button, .day-no, .trip-dates, .day-of-week, .transportation-type-select, 
 }
 
 .timeline ul > li.day-content {
-  background-color: white; /* Set background color to white for each day's list */
-  padding: 10px;
-  border-radius: 5px;
-  margin-bottom: 20px;
+    line-height: 1.6;
+    padding: 25px;
+    border: 1px solid #eee;
+    background-color: white;
+    border-radius: 5px;
 }
 
 .timeline ul > li.day-content > ul {
@@ -224,14 +225,12 @@ input, button, .day-no, .trip-dates, .day-of-week, .transportation-type-select, 
 
 .timeline ul > li.day-content > ul > li::before,
 .timeline ul > li.day-content > ul > li > ul > li::before {
-  font-family: 'FontAwesome';
-  content: '\f111';
-  position: absolute;
-  top: 4.5px;
+  content: attr(data-timestamp);
+  display: inline-block;
+  text-align: right;
   color: #0070F2;
-  background: none;
-  font-size: 10px;
-  z-index: 1;
+  font-weight: bold;
+  font-size: 0.9em;
 }
 
 .timeline ul > li.day-content > ul > li > span {
@@ -256,7 +255,6 @@ input, button, .day-no, .trip-dates, .day-of-week, .transportation-type-select, 
   display: inline-block;
   width: 7vh; /* Adjust width to align bullets */
   text-align: left;
-  margin-left: 50vh;
 }
 
 .timeline ul > li.day-content > ul > li > ul > li > ul > li {
@@ -270,7 +268,6 @@ input, button, .day-no, .trip-dates, .day-of-week, .transportation-type-select, 
   display: inline-block;
   width: 7vh; /* Adjust width to align timestamps */
   text-align: left;
-  margin-left: 50vh;
 }
 
 .timeline ul > li.day-content > ul > li > ul > li > ul > li {
@@ -284,7 +281,6 @@ input, button, .day-no, .trip-dates, .day-of-week, .transportation-type-select, 
   display: inline-block;
   width: 7vh; /* Adjust width to align timestamps */
   text-align: left;
-  margin-left: 50vh;
 }
 
 .timeline ul > li.day-content > ul > li > ul > li.future-destination {
@@ -293,6 +289,12 @@ input, button, .day-no, .trip-dates, .day-of-week, .transportation-type-select, 
 
 .timeline ul > li.day-content > ul > li > ul > li.current-or-future-destination {
   color: #0070F2;
+}
+
+.timeline div {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 500px; /* Limits how far a single line can go before wrapping */
 }
 
 .download-button {
@@ -393,31 +395,37 @@ input, button, .day-no, .trip-dates, .day-of-week, .transportation-type-select, 
 }
 
 .download-menu {
-  position: absolute;
-  right: 0;
-  top: 100%;
-  background: white;
-  border: 1px solid #f5f6f7;
-  border-radius: 5px;
-  display: none;
-  z-index: 1000;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 5px); /* Space it slightly below the button */
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: none;
+    z-index: 2000; /* Higher than anything else */
+    min-width: 180px;
+    overflow: hidden;
 }
 
 .download-menu button {
-  display: block;
-  width: 100%;
-  padding: 5px 10px;
-  border: none;
-  background: none;
-  cursor: pointer;
-  text-align: left;
+    display: block;
+    width: 100%;
+    padding: 12px 15px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    text-align: left;
+    font-size: 14px;
+    transition: background 0.2s;
 }
 
 .download-menu button:hover {
-  background: #f0f0f0;
+    background: #f0f7ff;
+    color: #0070F2;
 }
 
-.timestamp-input {
+.timestamp-input{
   width: 100px;
   margin-right: 10px;
 }
@@ -518,4 +526,175 @@ input:checked + .slider:before {
 .destination-icon{
   width: 35px;
   margin-left: 20px;
+}
+
+/* Styling for Foreign Language / Subtitles */
+.subtitle-input {
+  font-size: 0.85em !important;
+  color: #6a7c8e;
+  font-style: italic;
+  margin-top: 2px !important;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  background-color: #fdfdfe !important; /* Slightly lighter than main inputs */
+  border-top: 1px solid #eef0f2;
+}
+
+.dest-input-group {
+  margin-right: 10px;
+}
+
+/* Checklist Groups in the Planner */
+.checklist-group {
+  background: #ffffff;
+  border: 1px solid #eef0f2;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.checklist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #f5f6f7;
+  padding-bottom: 5px;
+}
+
+.checklist-title {
+  font-weight: bold;
+  font-size: 0.9em;
+  background: transparent;
+  color: #0070F2;
+  flex-grow: 1;
+}
+
+.checklist-item-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.checklist-item-row input[type="checkbox"] {
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
+}
+
+.checklist-item-row .item-text {
+  flex-grow: 1;
+  font-size: 0.85em;
+  padding: 4px 8px;
+}
+
+.add-item-btn {
+  font-size: 0.75em;
+  background: #f5f6f7;
+  color: #555;
+  margin-top: 5px;
+  padding: 2px 8px;
+}
+
+.add-item-btn:hover {
+  background: #eef0f2;
+}
+
+.delete-icon {
+  color: #ff4d4d;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 0 5px;
+}
+
+/* Global Checklist Area */
+#global-checklist-area {
+  background: #f0f7ff; /* Light blue tint to distinguish from days */
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  border: 1px dashed #0070F2;
+}
+
+#global-checklist-area h3 {
+  margin-top: 0;
+  font-size: 1.1em;
+  color: #0070F2;
+}
+
+/* Timeline Preview Styling */
+.preview-checklist {
+  list-style: none;
+  padding-left: 25px;
+  margin-top: 5px;
+}
+
+.preview-checklist li {
+  font-size: 0.85em;
+  color: #4a5568;
+  margin: 2px 0;
+}
+
+/* Specific styling for Subtitles in the Preview */
+.timeline ul > li.day-content .sub-dest-preview {
+  display: block;
+  font-size: 0.85em;
+  color: #5a67d8; /* A slightly more readable blue/gray */
+  margin-top: 4px;
+  padding-left: 8px;
+}
+
+.flight-input-grid {
+    background: #fdfdfd;
+    padding: 12px;
+    border: 1px solid #eef0f2;
+    border-radius: 6px;
+    margin-right: 10px;
+    display: flex;
+    flex-wrap: wrap; /* Allows wrapping on smaller screens */
+    gap: 8px; /* Even spacing between inputs */
+    align-items: center;
+}
+
+.flight-input-grid input {
+    border: 1px solid #ddd !important;
+    background-color: white !important;
+    font-size: 0.9em;
+}
+
+.airport-code-lookup {
+    width: 50px !important;
+    text-align: center;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.airlines-input {
+    width: 140px;
+}
+
+.flight-input-grid div input[type="time"] {
+    width: 80px;
+    flex-shrink: 0;
+}
+
+/* Hide the standard timestamp input only on flight rows */
+.location-row[data-type="flight"] .timestamp-input {
+    display: none !important;
+}
+
+.timeline ul > li.day-content > ul > li.flight-item,
+.timeline ul > li.day-content > ul > li.transport-item {
+    padding-left: 15px !important; /* Forces the card to use its own padding */
+    margin-left: 0 !important;
+}
+
+/* Hide the ghost timestamp pseudo-element for these cards */
+.timeline ul > li.day-content > ul > li.flight-item::before,
+.timeline ul > li.day-content > ul > li.transport-item::before {
+    content: none !important;
+    display: none !important;
 }

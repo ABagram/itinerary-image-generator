@@ -1,105 +1,52 @@
-const currencyOptions = `
-  <option value="USD">🇺🇸&nbsp;&nbsp;&nbsp;USD&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;United States Dollar&nbsp;&nbsp;&nbsp;($)</option>
-  <option value="EUR">🇪🇺&nbsp;&nbsp;&nbsp;EUR&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Euro&nbsp;&nbsp;&nbsp;(€)</option>
-  <option value="GBP">🇬🇧&nbsp;&nbsp;&nbsp;GBP&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;British Pound&nbsp;&nbsp;&nbsp;(£)</option>
-  <option value="JPY">🇯🇵&nbsp;&nbsp;&nbsp;JPY&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Japanese Yen&nbsp;&nbsp;&nbsp;(¥)</option>
-  <option value="AUD">🇦🇺&nbsp;&nbsp;&nbsp;AUD&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Australian Dollar&nbsp;&nbsp;&nbsp;($)</option>
-  <option value="CAD">🇨🇦&nbsp;&nbsp;&nbsp;CAD&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Canadian Dollar&nbsp;&nbsp;&nbsp;($)</option>
-  <option value="CHF">🇨🇭&nbsp;&nbsp;&nbsp;CHF&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Swiss Franc&nbsp;&nbsp;&nbsp;(CHF)</option>
-  <option value="CNY">🇨🇳&nbsp;&nbsp;&nbsp;CNY&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Chinese Yuan&nbsp;&nbsp;&nbsp;(¥)</option>
-  <option value="SEK">🇸🇪&nbsp;&nbsp;&nbsp;SEK&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Swedish Krona&nbsp;&nbsp;&nbsp;(kr)</option>
-  <option value="NZD">🇳🇿&nbsp;&nbsp;&nbsp;NZD&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;New Zealand Dollar&nbsp;&nbsp;&nbsp;($)</option>
-  <option value="MXN">🇲🇽&nbsp;&nbsp;&nbsp;MXN&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Mexican Peso&nbsp;&nbsp;&nbsp;($)</option>
-  <option value="SGD">🇸🇬&nbsp;&nbsp;&nbsp;SGD&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Singapore Dollar&nbsp;&nbsp;&nbsp;($)</option>
-  <option value="HKD">🇭🇰&nbsp;&nbsp;&nbsp;HKD&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Hong Kong Dollar&nbsp;&nbsp;&nbsp;($)</option>
-  <option value="NOK">🇳🇴&nbsp;&nbsp;&nbsp;NOK&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Norwegian Krone&nbsp;&nbsp;&nbsp;(kr)</option>
-  <option value="KRW">🇰🇷&nbsp;&nbsp;&nbsp;KRW&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;South Korean Won&nbsp;&nbsp;&nbsp;(₩)</option>
-  <option value="TRY">🇹🇷&nbsp;&nbsp;&nbsp;TRY&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Turkish Lira&nbsp;&nbsp;&nbsp;(₺)</option>
-  <option value="RUB">🇷🇺&nbsp;&nbsp;&nbsp;RUB&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Russian Ruble&nbsp;&nbsp;&nbsp;(₽)</option>
-  <option value="INR">🇮🇳&nbsp;&nbsp;&nbsp;INR&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Indian Rupee&nbsp;&nbsp;&nbsp;(₹)</option>
-  <option value="BRL">🇧🇷&nbsp;&nbsp;&nbsp;BRL&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Brazilian Real&nbsp;&nbsp;&nbsp;(R$)</option>
-  <option value="ZAR">🇿🇦&nbsp;&nbsp;&nbsp;ZAR&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;South African Rand&nbsp;&nbsp;&nbsp;(R)</option>
-  <option value="PHP">🇵🇭&nbsp;&nbsp;&nbsp;PHP&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Philippine Peso&nbsp;&nbsp;&nbsp;(₱)</option>
-  <option value="PLN">🇵🇱&nbsp;&nbsp;&nbsp;PLN&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Polish Zloty&nbsp;&nbsp;&nbsp;(zł)</option>
-  <option value="THB">🇹🇭&nbsp;&nbsp;&nbsp;THB&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Thai Baht&nbsp;&nbsp;&nbsp;(฿)</option>
-  <option value="IDR">🇮🇩&nbsp;&nbsp;&nbsp;IDR&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Indonesian Rupiah&nbsp;&nbsp;&nbsp;(Rp)</option>
-  <option value="HUF">🇭🇺&nbsp;&nbsp;&nbsp;HUF&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Hungarian Forint&nbsp;&nbsp;&nbsp;(Ft)</option>
-  <option value="CZK">🇨🇿&nbsp;&nbsp;&nbsp;CZK&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Czech Koruna&nbsp;&nbsp;&nbsp;(Kč)</option>
-  <option value="ILS">🇮🇱&nbsp;&nbsp;&nbsp;ILS&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Israeli Shekel&nbsp;&nbsp;&nbsp;(₪)</option>
-  <option value="MYR">🇲🇾&nbsp;&nbsp;&nbsp;MYR&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Malaysian Ringgit&nbsp;&nbsp;&nbsp;(RM)</option>
-  <option value="SAR">🇸🇦&nbsp;&nbsp;&nbsp;SAR&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Saudi Riyal&nbsp;&nbsp;&nbsp;(ر.س)</option>
-  <option value="AED">🇦🇪&nbsp;&nbsp;&nbsp;AED&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;UAE Dirham&nbsp;&nbsp;&nbsp;(د.إ)</option>
-  <option value="COP">🇨🇴&nbsp;&nbsp;&nbsp;COP&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Colombian Peso&nbsp;&nbsp;&nbsp;($)</option>
-  <option value="CLP">🇨🇱&nbsp;&nbsp;&nbsp;CLP&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Chilean Peso&nbsp;&nbsp;&nbsp;($)</option>
-  <option value="PEN">🇵🇪&nbsp;&nbsp;&nbsp;PEN&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Peruvian Sol&nbsp;&nbsp;&nbsp;(S/.)</option>
-  <option value="VND">🇻🇳&nbsp;&nbsp;&nbsp;VND&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Vietnamese Dong&nbsp;&nbsp;&nbsp;(₫)</option>
-  <option value="EGP">🇪🇬&nbsp;&nbsp;&nbsp;EGP&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Egyptian Pound&nbsp;&nbsp;&nbsp;(£)</option>
-  <option value="NGN">🇳🇬&nbsp;&nbsp;&nbsp;NGN&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Nigerian Naira&nbsp;&nbsp;&nbsp;(₦)</option>
-  <option value="PKR">🇵🇰&nbsp;&nbsp;&nbsp;PKR&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Pakistani Rupee&nbsp;&nbsp;&nbsp;(₨)</option>
-  <option value="BDT">🇧🇩&nbsp;&nbsp;&nbsp;BDT&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Bangladeshi Taka&nbsp;&nbsp;&nbsp;(৳)</option>
-  <option value="LKR">🇱🇰&nbsp;&nbsp;&nbsp;LKR&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Sri Lankan Rupee&nbsp;&nbsp;&nbsp;(Rs)</option>
-  <option value="KWD">🇰🇼&nbsp;&nbsp;&nbsp;KWD&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Kuwaiti Dinar&nbsp;&nbsp;&nbsp;(د.ك)</option>
-  <option value="QAR">🇶🇦&nbsp;&nbsp;&nbsp;QAR&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Qatari Riyal&nbsp;&nbsp;&nbsp;(ر.ق)</option>
-  <option value="OMR">🇴🇲&nbsp;&nbsp;&nbsp;OMR&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Omani Rial&nbsp;&nbsp;&nbsp;(ر.ع.)</option>
-  <option value="BHD">🇧🇭&nbsp;&nbsp;&nbsp;BHD&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Bahraini Dinar&nbsp;&nbsp;&nbsp;(ب.د)</option>
-  <option value="JOD">🇯🇴&nbsp;&nbsp;&nbsp;JOD&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Jordanian Dinar&nbsp;&nbsp;&nbsp;(د.ا)</option>
-  <option value="IQD">🇮🇶&nbsp;&nbsp;&nbsp;IQD&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Iraqi Dinar&nbsp;&nbsp;&nbsp;(ع.د)</option>
-  <option value="LBP">🇱🇧&nbsp;&nbsp;&nbsp;LBP&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Lebanese Pound&nbsp;&nbsp;&nbsp;(ل.ل)</option>
-  <option value="SYP">🇸🇾&nbsp;&nbsp;&nbsp;SYP&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Syrian Pound&nbsp;&nbsp;&nbsp;(ل.س)</option>
-  <option value="YER">🇾🇪&nbsp;&nbsp;&nbsp;YER&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Yemeni Rial&nbsp;&nbsp;&nbsp;(﷼)</option>
-  <option value="AFN">🇦🇫&nbsp;&nbsp;&nbsp;AFN&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Afghan Afghani&nbsp;&nbsp;&nbsp;(؋)</option>
-  <option value="IRR">🇮🇷&nbsp;&nbsp;&nbsp;IRR&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Iranian Rial&nbsp;&nbsp;&nbsp;(﷼)</option>
-  <option value="KZT">🇰🇿&nbsp;&nbsp;&nbsp;KZT&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Kazakhstani Tenge&nbsp;&nbsp;&nbsp;(₸)</option>
-  <option value="UZS">🇺🇿&nbsp;&nbsp;&nbsp;UZS&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Uzbekistani Som&nbsp;&nbsp;&nbsp;(сўм)</option>
-  <option value="TMT">🇹🇲&nbsp;&nbsp;&nbsp;TMT&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Turkmenistani Manat&nbsp;&nbsp;&nbsp;(m)</option>
-  <option value="AZN">🇦🇿&nbsp;&nbsp;&nbsp;AZN&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Azerbaijani Manat&nbsp;&nbsp;&nbsp;(₼)</option>
-  <option value="GEL">🇬🇪&nbsp;&nbsp;&nbsp;GEL&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Georgian Lari&nbsp;&nbsp;&nbsp;(₾)</option>
-  <option value="AMD">🇦🇲&nbsp;&nbsp;&nbsp;AMD&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Armenian Dram&nbsp;&nbsp;&nbsp;(֏)</option>
-  <option value="BYN">🇧🇾&nbsp;&nbsp;&nbsp;BYN&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Belarusian Ruble&nbsp;&nbsp;&nbsp;(Br)</option>
-  <option value="MDL">🇲🇩&nbsp;&nbsp;&nbsp;MDL&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Moldovan Leu&nbsp;&nbsp;&nbsp;(L)</option>
-  <option value="UAH">🇺🇦&nbsp;&nbsp;&nbsp;UAH&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Ukrainian Hryvnia&nbsp;&nbsp;&nbsp;(₴)</option>
-  <option value="BAM">🇧🇦&nbsp;&nbsp;&nbsp;BAM&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Bosnian Convertible Mark&nbsp;&nbsp;&nbsp;(KM)</option>
-  <option value="MKD">🇲🇰&nbsp;&nbsp;&nbsp;MKD&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Macedonian Denar&nbsp;&nbsp;&nbsp;(ден)</option>
-  <option value="ALL">🇦🇱&nbsp;&nbsp;&nbsp;ALL&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Albanian Lek&nbsp;&nbsp;&nbsp;(L)</option>
-  <option value="RSD">🇷🇸&nbsp;&nbsp;&nbsp;RSD&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Serbian Dinar&nbsp;&nbsp;&nbsp;(дин)</option>
-  <option value="HRK">🇭🇷&nbsp;&nbsp;&nbsp;HRK&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Croatian Kuna&nbsp;&nbsp;&nbsp;(kn)</option>
-  <option value="BGN">🇧🇬&nbsp;&nbsp;&nbsp;BGN&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Bulgarian Lev&nbsp;&nbsp;&nbsp;(лв)</option>
-  <option value="RON">🇷🇴&nbsp;&nbsp;&nbsp;RON&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Romanian Leu&nbsp;&nbsp;&nbsp;(lei)</option>
-  <option value="ISK">🇮🇸&nbsp;&nbsp;&nbsp;ISK&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Icelandic Krona&nbsp;&nbsp;&nbsp;(kr)</option>
-  <option value="DKK">🇩🇰&nbsp;&nbsp;&nbsp;DKK&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Danish Krone&nbsp;&nbsp;&nbsp;(kr)</option>
-  <option value="HNL">🇭🇳&nbsp;&nbsp;&nbsp;HNL&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Honduran Lempira&nbsp;&nbsp;&nbsp;(L)</option>
-  <option value="GTQ">🇬🇹&nbsp;&nbsp;&nbsp;GTQ&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Guatemalan Quetzal&nbsp;&nbsp;&nbsp;(Q)</option>
-  <option value="CRC">🇨🇷&nbsp;&nbsp;&nbsp;CRC&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Costa Rican Colon&nbsp;&nbsp;&nbsp;(₡)</option>
-  <option value="PAB">🇵🇦&nbsp;&nbsp;&nbsp;PAB&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Panamanian Balboa&nbsp;&nbsp;&nbsp;(B/.)</option>
-  <option value="BZD">🇧🇿&nbsp;&nbsp;&nbsp;BZD&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Belize Dollar&nbsp;&nbsp;&nbsp;($)</option>
-  <option value="HTG">🇭🇹&nbsp;&nbsp;&nbsp;HTG&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Haitian Gourde&nbsp;&nbsp;&nbsp;(G)</option>
-  <option value="JMD">🇯🇲&nbsp;&nbsp;&nbsp;JMD&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Jamaican Dollar&nbsp;&nbsp;&nbsp;($)</option>
-  <option value="TTD">🇹🇹&nbsp;&nbsp;&nbsp;TTD&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Trinidad and Tobago Dollar&nbsp;&nbsp;&nbsp;($)</option>
-  <option value="BBD">🇧🇧&nbsp;&nbsp;&nbsp;BBD&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Barbadian Dollar&nbsp;&nbsp;&nbsp;($)</option>
-  <option value="XCD">🇦🇬&nbsp;&nbsp;&nbsp;XCD&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;East Caribbean Dollar&nbsp;&nbsp;&nbsp;($)</option>
-  <option value="KYD">🇰🇾&nbsp;&nbsp;&nbsp;KYD&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Cayman Islands Dollar&nbsp;&nbsp;&nbsp;($)</option>
-  <option value="BSD">🇧🇸&nbsp;&nbsp;&nbsp;BSD&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Bahamian Dollar&nbsp;&nbsp;&nbsp;($)</option>
-  <option value="BMD">🇧🇲&nbsp;&nbsp;&nbsp;BMD&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Bermudian Dollar&nbsp;&nbsp;&nbsp;($)</option>
-  <option value="FJD">🇫🇯&nbsp;&nbsp;&nbsp;FJD&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Fijian Dollar&nbsp;&nbsp;&nbsp;($)</option>
-  <option value="PGK">🇵🇬&nbsp;&nbsp;&nbsp;PGK&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Papua New Guinean Kina&nbsp;&nbsp;&nbsp;(K)</option>
-  <option value="SBD">🇸🇧&nbsp;&nbsp;&nbsp;SBD&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Solomon Islands Dollar&nbsp;&nbsp;&nbsp;($)</option>
-  <option value="TOP">🇹🇴&nbsp;&nbsp;&nbsp;TOP&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Tongan Pa'anga&nbsp;&nbsp;&nbsp;(T$)</option>
-  <option value="WST">🇼🇸&nbsp;&nbsp;&nbsp;WST&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Samoan Tala&nbsp;&nbsp;&nbsp;(WS$)</option>
-  <option value="VUV">🇻🇺&nbsp;&nbsp;&nbsp;VUV&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Vanuatu Vatu&nbsp;&nbsp;&nbsp;(VT)</option>
-  <option value="KPW">🇰🇵&nbsp;&nbsp;&nbsp;KPW&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;North Korean Won&nbsp;&nbsp;&nbsp;(₩)</option>
-  <option value="MNT">🇲🇳&nbsp;&nbsp;&nbsp;MNT&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Mongolian Tugrik&nbsp;&nbsp;&nbsp;(₮)</option>
-  <option value="MMK">🇲🇲&nbsp;&nbsp;&nbsp;MMK&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Myanmar Kyat&nbsp;&nbsp;&nbsp;(K)</option>
-  <option value="LAK">🇱🇦&nbsp;&nbsp;&nbsp;LAK&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Lao Kip&nbsp;&nbsp;&nbsp;(₭)</option>
-  <option value="KHR">🇰🇭&nbsp;&nbsp;&nbsp;KHR&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Cambodian Riel&nbsp;&nbsp;&nbsp;(៛)</option>
-  <option value="BND">🇧🇳&nbsp;&nbsp;&nbsp;BND&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Brunei Dollar&nbsp;&nbsp;&nbsp;($)</option>
-  <option value="MOP">🇲🇴&nbsp;&nbsp;&nbsp;MOP&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Macanese Pataca&nbsp;&nbsp;&nbsp;(MOP$)</option>
-  <option value="TWD">🇹🇼&nbsp;&nbsp;&nbsp;TWD&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;New Taiwan Dollar&nbsp;&nbsp;&nbsp;(NT$)</option>
-  <option value="MVR">🇲🇻&nbsp;&nbsp;&nbsp;MVR&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Maldivian Rufiyaa&nbsp;&nbsp;&nbsp;(Rf)</option>
-  <option value="SCR">🇸🇨&nbsp;&nbsp;&nbsp;SCR&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Seychellois Rupee&nbsp;&nbsp;&nbsp;(₨)</option>
-  <option value="MUR">🇲🇺&nbsp;&nbsp;&nbsp;MUR&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Mauritian Rupee&nbsp;&nbsp;&nbsp;(₨)</option>
-  <option value="NPR">🇳🇵&nbsp;&nbsp;&nbsp;NPR&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Nepalese Rupee&nbsp;&nbsp;&nbsp;(₨)</option>
-`;
+/**
+ * Currency Data and Initialization
+ */
+const currencies = [
+    { code: 'USD', name: '🇺🇸 USD - US Dollar', symbol: '$' },
+    { code: 'PHP', name: '🇵🇭 PHP - Philippine Peso', symbol: '₱' },
+    { code: 'JPY', name: '🇯🇵 JPY - Japanese Yen', symbol: '¥' },
+    { code: 'EUR', name: '🇪🇺 EUR - Euro', symbol: '€' },
+    { code: 'GBP', name: '🇬🇧 GBP - British Pound', symbol: '£' },
+    { code: 'KRW', name: '🇰🇷 KRW - South Korean Won', symbol: '₩' },
+    { code: 'CNY', name: '🇨🇳 CNY - Chinese Yuan', symbol: '¥' },
+    { code: 'SGD', name: '🇸🇬 SGD - Singapore Dollar', symbol: '$' },
+    { code: 'AUD', name: '🇦🇺 AUD - Australian Dollar', symbol: '$' },
+    { code: 'CAD', name: '🇨🇦 CAD - Canadian Dollar', symbol: '$' },
+    { code: 'HKD', name: '🇭🇰 HKD - Hong Kong Dollar', symbol: '$' },
+    { code: 'THB', name: '🇹🇭 THB - Thai Baht', symbol: '฿' },
+    { code: 'TWD', name: '🇹🇼 TWD - Taiwan New Dollar', symbol: 'NT$' },
+    { code: 'VND', name: '🇻🇳 VND - Vietnamese Dong', symbol: '₫' }
+];
 
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('currency-select').innerHTML = currencyOptions;
-});
+// Populate the Currency Symbols object in global scope (used by timeline-engine)
+window.currencySymbols = currencies.reduce((acc, curr) => {
+    acc[curr.code] = curr.symbol;
+    return acc;
+}, {});
+
+/**
+ * Populate the Select Element
+ */
+function populateCurrencyDropdown() {
+    const select = document.getElementById('currency-select');
+    if (!select) return;
+
+    // Clear existing options
+    select.innerHTML = '';
+
+    currencies.forEach(curr => {
+        const option = document.createElement('option');
+        option.value = curr.code;
+        option.textContent = curr.name;
+        
+        // Auto-select if this is the one stored in settings
+        if (curr.code === selectedCurrency) {
+            option.selected = true;
+        }
+        
+        select.appendChild(option);
+    });
+}
+
+// Execute population immediately
+populateCurrencyDropdown();

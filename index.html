@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Itinerary Constructor</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="destination.png" type="image/x-icon">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://kit.fontawesome.com/9ef70a0feb.js" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 </head>
+
 <body>
   <div class="planner-container">
     <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -26,6 +31,11 @@
     <div class="configurations">
       <span>Configurations:</span>
       <label class="switch">
+        <input type="checkbox" id="weather-toggle" onclick="toggleWeather()">
+        <span class="slider round"></span>
+      </label>
+      <span>Enable Weather Info</span>
+      <label class="switch">
         <input type="checkbox" id="timestamp-toggle" onclick="toggleTimestamp()">
         <span class="slider round"></span>
       </label>
@@ -35,9 +45,16 @@
         <span class="slider round"></span>
       </label>
       <span>Enable Budget</span>
-      <select id="currency-select" class="currency-select" onchange="updateCurrency()" oninput="filterCurrencyOptions()">
+      <select id="currency-select" class="currency-select" onchange="updateCurrency()"
+        oninput="filterCurrencyOptions()">
         <!-- Currency options will be loaded here by JavaScript -->
       </select>
+    </div>
+
+    <div id="global-checklist-area">
+      <h3><i class="fas fa-tasks"></i> Trip Essentials (Global)</h3>
+      <div id="global-checklists-container"></div>
+      <button class="add-day" onclick="addChecklist('global')" style="margin-top:10px;">+ Add Global Checklist</button>
     </div>
 
     <div id="days-container"></div>
@@ -46,14 +63,13 @@
   </div>
 
   <div class="canvas-container" id="canvas-container">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
       <h2>Itinerary</h2>
-      <div style="position: relative;">
-        <button class="download-button" id="download-button" onclick="showDownloadMenu()">
-          <i class="fa">&#xf019;</i>
-          Download
+      <div class="download-container" style="position: relative;">
+        <button class="download-button" id="download-button" onclick="showDownloadMenu(event)">
+          <i class="fas fa-download"></i> Download
         </button>
-        <div class="download-menu" id="download-menu">
+        <div class="download-menu" id="download-menu" style="display: none;">
           <button onclick="downloadAsPNG()">Download as PNG</button>
           <button onclick="downloadAsPDF()">Download as PDF</button>
         </div>
@@ -66,33 +82,27 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-  <script src="functionality.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/ui-builders.js"></script>
+  <script src="js/timeline-engine.js"></script>
+  <script src="js/app-core.js"></script>
   <script src="toggle.js"></script>
   <script src="currency-options.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      $('#currency-select').select2({
-        placeholder: 'Select a currency',
-        allowClear: true,
-        templateSelection: function (data) {
-          if (!data.id) {
-            return data.text;
-          }
-          const flag = data.text.split(' ')[0];
-          const acronym = data.text.split(' ')[1];
-          return $('<span>' + flag + ' ' + acronym + '</span>');
-        },
-        templateResult: function (data) {
-          return data.text;
-        }
-      }).on('select2:open', function() {
-        $('.select2-search__field').on('input', filterCurrencyOptions);
-      });
+    $(document).ready(function () {
+      $('#currency-select').select2({ placeholder: 'Select a currency' });
 
-      // Ensure data is loaded on page load
-      loadData();
+      // Set the dropdown to the saved currency from config.js
+      if (typeof selectedCurrency !== 'undefined') {
+        $('#currency-select').val(selectedCurrency).trigger('change');
+      }
+
+      $('#currency-select').on('change', function () {
+        updateCurrency();
+      });
     });
   </script>
 </body>
+
 </html>
